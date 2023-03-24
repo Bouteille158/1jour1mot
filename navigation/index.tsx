@@ -12,7 +12,7 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName, Image, Pressable, View } from "react-native";
+import { ColorSchemeName, Pressable, Text, View } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -31,11 +31,14 @@ import {
 import LinkingConfiguration from "./LinkingConfiguration";
 import { Provider } from "react-redux/es/exports";
 import { store } from "../redux";
-import CartScreen from "../screens/CartScreen";
+import NewWordScreen from "../screens/CartScreen";
 import FavScreen from "../screens/FavScreen";
 import ProfileScreen from "../screens/profile/ProfileScreen";
 import ProfileSettingsScreen from "../screens/profile/ProfileSettingsScreen";
 import CircleIcon from "../components/atoms/circle-icon";
+import { Feather } from "@expo/vector-icons";
+import Spacer from "../components/atoms/spacer";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function Navigation({
   colorScheme,
@@ -70,10 +73,11 @@ function TabBarIcon(props: {
 
 const Header = () => {
   return (
-    <Image
-      style={{ width: 100, height: 40 }}
-      source={require("../assets/images/logo-shoes-lock.png")}
-    />
+    <View style={{ flexDirection: "row" }}>
+      <Feather name="book-open" size={24} color="black" />
+      <Spacer width={10}></Spacer>
+      <Text style={{ fontWeight: "bold" }}>1 jour 1 mot</Text>
+    </View>
   );
 };
 
@@ -84,9 +88,6 @@ function RootNavigator() {
         name="Launcher"
         component={LauncherScreen}
         options={{
-          headerStyle: {
-            backgroundColor: "#489BAD",
-          },
           headerTitle: () => <Header />,
           headerTitleAlign: "center",
         }}
@@ -95,9 +96,6 @@ function RootNavigator() {
         name="Register"
         component={RegisterScreen}
         options={{
-          headerStyle: {
-            backgroundColor: "#489BAD",
-          },
           headerTitle: () => <Header />,
           headerTitleAlign: "center",
         }}
@@ -106,9 +104,6 @@ function RootNavigator() {
         name="Login"
         component={LoginScreen}
         options={{
-          headerStyle: {
-            backgroundColor: "#489BAD",
-          },
           headerTitle: () => <Header />,
           headerTitleAlign: "center",
         }}
@@ -128,11 +123,6 @@ function RootNavigator() {
         <Stack.Screen
           name="ProfileSettings"
           component={ProfileSettingsScreen}
-          options={{
-            headerStyle: {
-              backgroundColor: "#489BAD",
-            },
-          }}
         />
       </Stack.Group>
     </Stack.Navigator>
@@ -156,7 +146,6 @@ function BottomTabNavigator() {
           tabBarActiveTintColor: "#000",
           tabBarInactiveTintColor: "#000",
           tabBarStyle: {
-            backgroundColor: "#489BAD",
             // height: 60,
             paddingTop: 6,
           },
@@ -169,7 +158,7 @@ function BottomTabNavigator() {
           options={{
             title: "Tab One",
             headerStyle: {
-              backgroundColor: "#489BAD",
+              backgroundColor: "#ebebeb",
             },
             headerTitle: () => <Header />,
             headerTitleAlign: "center",
@@ -182,27 +171,31 @@ function BottomTabNavigator() {
           options={{
             title: "Shop",
             headerStyle: {
-              backgroundColor: "#489BAD",
+              backgroundColor: "#ebebeb",
             },
             headerTitle: () => <Header />,
             headerTitleAlign: "center",
             tabBarIcon: ({ color }) => (
-              <CircleIcon url={require("../assets/images/home-icon.png")} />
+              <Feather name="file-text" color="black" size={30} />
             ),
           }}
         />
         <BottomTab.Screen
           name="Cart"
-          component={CartScreen}
+          component={NewWordScreen}
           options={{
             title: "Cart",
             headerStyle: {
-              backgroundColor: "#489BAD",
+              backgroundColor: "#ebebeb",
             },
             headerTitle: () => <Header />,
             headerTitleAlign: "center",
             tabBarIcon: ({ color }) => (
-              <CircleIcon url={require("../assets/images/cart.png")} />
+              <MaterialCommunityIcons
+                name="form-textbox-password"
+                size={30}
+                color="black"
+              />
             ),
           }}
         />
@@ -212,12 +205,12 @@ function BottomTabNavigator() {
           options={{
             title: "Favorites",
             headerStyle: {
-              backgroundColor: "#489BAD",
+              backgroundColor: "#ebebeb",
             },
             headerTitle: () => <Header />,
             headerTitleAlign: "center",
             tabBarIcon: ({ color }) => (
-              <CircleIcon url={require("../assets/images/fav-icon.png")} />
+              <Feather name="book" size={30} color="black" />
             ),
           }}
         />
@@ -227,12 +220,12 @@ function BottomTabNavigator() {
           options={({ navigation }: RootTabScreenProps<"Profile">) => ({
             title: "Profile",
             headerStyle: {
-              backgroundColor: "#489BAD",
+              backgroundColor: "#ebebeb",
             },
             headerTitle: () => <Header />,
             headerTitleAlign: "center",
             tabBarIcon: ({ color }) => (
-              <CircleIcon url={require("../assets/images/user-icon.png")} />
+              <Feather name="user" size={30} color="black" />
             ),
             headerRight: () => (
               <Pressable
@@ -241,8 +234,8 @@ function BottomTabNavigator() {
                   opacity: pressed ? 0.5 : 1,
                 })}
               >
-                <FontAwesome
-                  name="gear"
+                <Feather
+                  name="edit"
                   size={25}
                   color={"#000"}
                   style={{ marginRight: 15 }}
