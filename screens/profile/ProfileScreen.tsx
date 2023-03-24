@@ -1,11 +1,18 @@
-import { ActivityIndicator, FlatList, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { RootTabScreenProps } from "../../types";
 import { getOrders, Order } from "../../services/order";
 import OrderItemBox from "../../components/organisms/order-item-box";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "../../services/users";
-import { fireDB } from "../../firebase";
 import { setGlobalUser } from "../../redux";
 import { useDispatch } from "react-redux";
 
@@ -17,22 +24,22 @@ export default function ProfileScreen({
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    AsyncStorage.getItem("user")
-      .then((value) => JSON.parse(value!).uid)
-      .then((uid) => {
-        fireDB
-          .collection("user")
-          .where("uid", "==", uid)
-          .onSnapshot((res) => {
-            const user = {
-              ...res.docs[0].data(),
-              id: res.docs[0].id,
-            } as any;
-            dispatch(setGlobalUser(user));
-            setUser(user);
-            getOrders(user.uid).then((res) => setOrders(res));
-          });
-      });
+    // AsyncStorage.getItem("user")
+    //   .then((value) => JSON.parse(value!).uid)
+    //   .then((uid) => {
+    //     fireDB
+    //       .collection("user")
+    //       .where("uid", "==", uid)
+    //       .onSnapshot((res) => {
+    //         const user = {
+    //           ...res.docs[0].data(),
+    //           id: res.docs[0].id,
+    //         } as any;
+    //         dispatch(setGlobalUser(user));
+    //         setUser(user);
+    //         getOrders(user.uid).then((res) => setOrders(res));
+    //       });
+    //   });
   }, []);
 
   useEffect(() => {
@@ -50,9 +57,11 @@ export default function ProfileScreen({
         <View style={styles.container}>
           <View style={styles.header}>
             <Image
-              source={user.profilePic ?
-                { uri: user.profilePic } :
-                require("../../assets/images/user-icon.png")}
+              source={
+                user.profilePic
+                  ? { uri: user.profilePic }
+                  : require("../../assets/images/user-icon.png")
+              }
               style={styles.profilePic}
             />
             <View style={styles.profileInfos}>
@@ -67,9 +76,7 @@ export default function ProfileScreen({
             data={orders}
             style={styles.orders}
             keyExtractor={(item, index) => item.id ?? index.toString()}
-            renderItem={({ item }) => (
-              <OrderItemBox order={item} />
-            )}
+            renderItem={({ item }) => <OrderItemBox order={item} />}
             ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
           />
         </View>
@@ -81,9 +88,9 @@ export default function ProfileScreen({
           }}
         >
           <ActivityIndicator size="large" />
+          <Text>Bonjour</Text>
         </View>
       )}
-
     </ScrollView>
   );
 }
@@ -113,7 +120,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileAddress: {
-    color: "#808080"
+    color: "#808080",
   },
   ordersTitle: {
     fontSize: 16,
@@ -121,7 +128,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingHorizontal: 16,
     fontWeight: "bold",
-    color: "#505050"
+    color: "#505050",
   },
   orders: {
     paddingHorizontal: 16,

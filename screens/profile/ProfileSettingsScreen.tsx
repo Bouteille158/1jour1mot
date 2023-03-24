@@ -1,10 +1,16 @@
-import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackScreenProps } from "../../types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, setGlobalUser } from "../../redux";
-import { fireDB } from "../../firebase";
 
 export default function ProfileSettingsScreen({
   navigation,
@@ -16,17 +22,17 @@ export default function ProfileSettingsScreen({
   const [address, setAddress] = useState(user.address);
 
   const updateUser = () => {
-    fireDB
-      .collection("user")
-      .doc(user.id)
-      .update({
-        ...user,
-        name: name,
-        address: address,
-      })
-      .then(() => navigation.goBack())
-      .catch((err) => console.error(err));
-  }
+    // fireDB
+    //   .collection("user")
+    //   .doc(user.id)
+    //   .update({
+    //     ...user,
+    //     name: name,
+    //     address: address,
+    //   })
+    //   .then(() => navigation.goBack())
+    //   .catch((err) => console.error(err));
+  };
 
   const logout = () => {
     AsyncStorage.setItem("user", "").then(() => {
@@ -86,7 +92,7 @@ export default function ProfileSettingsScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   title: {
     color: "#505050",
@@ -113,7 +119,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveButton: {
-    alignSelf: 'center',
+    alignSelf: "center",
     borderRadius: 300,
     borderColor: "black",
     borderWidth: 2,

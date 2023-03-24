@@ -1,35 +1,34 @@
-import { fireDB } from "../firebase";
-
-export async function getUser(uid: string): Promise<User> {
+export async function getUser(uid: string): Promise<User | any> {
   let user: User = {
     uid: "",
     name: "",
     address: "",
   };
 
-  const res = await fireDB.collection("user").where("uid", "==", uid).get();
+  // const res = await fireDB.collection("user").where("uid", "==", uid).get();
 
-  res.forEach((elem) => {
-    // console.log(elem.data());
-    const stringValue = JSON.stringify(elem.data());
-    user = {
-      ...JSON.parse(stringValue),
-      id: elem.id,
-    };
-  });
-  return user;
+  // res.forEach((elem) => {
+  //   // console.log(elem.data());
+  //   const stringValue = JSON.stringify(elem.data());
+  //   user = {
+  //     ...JSON.parse(stringValue),
+  //     id: elem.id,
+  //   };
+  // });
+  // return user;
+  return {};
 }
 
 export function createUser(user: User): void {
-  fireDB
-    .collection("user")
-    .add(user)
-    .then(() => {
-      console.log("User created");
-    })
-    .catch(() => {
-      console.log("Error user creation");
-    });
+  // fireDB
+  //   .collection("user")
+  //   .add(user)
+  //   .then(() => {
+  //     console.log("User created");
+  //   })
+  //   .catch(() => {
+  //     console.log("Error user creation");
+  //   });
 }
 
 export type User = {

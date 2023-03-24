@@ -1,52 +1,60 @@
-import { fireDB } from "../firebase";
 import { ShoeInCart } from "../redux";
 
 export async function getOrders(userID: string): Promise<Array<Order>> {
-  let orderList: Array<Order> = [];
+  // let orderList: Array<Order> = [];
 
-  const orders = await fireDB
-    .collection("orders")
-    .where("userID", "==", userID)
-    .get();
+  // const orders = await fireDB
+  //   .collection("orders")
+  //   .where("userID", "==", userID)
+  //   .get();
 
-  orders.forEach((doc) => {
-    // console.log(doc.data());
-    // console.log(doc.id);
-    const stringValue = JSON.stringify(doc.data());
-    let value: Order = JSON.parse(stringValue);
-    value.id = doc.id;
-    orderList.push(value);
-  });
-  console.log("Orders list : ", orderList);
-  return orderList;
+  // orders.forEach((doc) => {
+  //   // console.log(doc.data());
+  //   // console.log(doc.id);
+  //   const stringValue = JSON.stringify(doc.data());
+  //   let value: Order = JSON.parse(stringValue);
+  //   value.id = doc.id;
+  //   orderList.push(value);
+  // });
+  // console.log("Orders list : ", orderList);
+  // return orderList;
+  return [
+    {
+      id: "0",
+      deliveryAddress: "12 adresse",
+      items: [],
+      status: "en cours",
+      userID: "user id",
+    },
+  ];
 }
 
 export function createOrder(order: Order): void {
-  fireDB
-    .collection("orders")
-    .add(order)
-    .then(() => {
-      console.log("Order created");
-    })
-    .catch(() => {
-      console.log("Error order creation");
-    });
+  // fireDB
+  //   .collection("orders")
+  //   .add(order)
+  //   .then(() => {
+  //     console.log("Order created");
+  //   })
+  //   .catch(() => {
+  //     console.log("Error order creation");
+  //   });
   return;
 }
 
 export async function updateOrderStatus(status: string, orderID: string) {
-  if (status) {
-    fireDB
-      .collection("orders")
-      .doc(orderID)
-      .update({ status: status })
-      .catch((err) => {
-        console.error(err);
-      });
-    console.log("Updated order ", orderID, " with status ", status);
-  } else {
-    console.error("Status is empty");
-  }
+  // if (status) {
+  //   fireDB
+  //     .collection("orders")
+  //     .doc(orderID)
+  //     .update({ status: status })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     });
+  //   console.log("Updated order ", orderID, " with status ", status);
+  // } else {
+  //   console.error("Status is empty");
+  // }
 }
 
 export function getOrderTotalPrice(order: Order) {
