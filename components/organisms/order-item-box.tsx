@@ -18,23 +18,37 @@ export default function OrderItemBox({ order: order }: BoxItemProps) {
             <Text
               style={{
                 color: "green",
-                textTransform: "uppercase"
+                textTransform: "uppercase",
               }}
             >
               {order.status}
             </Text>
-            <Text style={{ color: "#808080", fontSize: 12, marginBottom: 10 }}>N° {order.id}</Text>
+            <Text style={{ color: "#808080", fontSize: 12, marginBottom: 10 }}>
+              Commande N° {order.id}
+            </Text>
             {order.items.map((item, index) => (
               <View key={index} style={{ flexDirection: "row" }}>
-                <Image source={{ uri: item.img }} style={{ width: 80, height: 80 }} />
+                <Image
+                  source={{ uri: item.img }}
+                  style={{ width: 80, height: 80 }}
+                />
                 <View style={{ marginTop: 12, marginLeft: 12 }}>
                   <Text>{item.name}</Text>
                   <View style={{ flexDirection: "row" }}>
                     {item.promo ? (
                       <>
-                        <Text>€{item.price * (1 - item.promo / 100) * item.quantity}</Text>
+                        <Text>
+                          €{item.price * (1 - item.promo / 100) * item.quantity}
+                        </Text>
                         <Text> </Text>
-                        <Text style={{ color: "#808080", textDecorationLine: 'line-through' }}>€{item.price}</Text>
+                        <Text
+                          style={{
+                            color: "#808080",
+                            textDecorationLine: "line-through",
+                          }}
+                        >
+                          €{item.price}
+                        </Text>
                       </>
                     ) : (
                       <Text>€{item.price}</Text>
@@ -52,7 +66,9 @@ export default function OrderItemBox({ order: order }: BoxItemProps) {
               }}
             >
               <Text style={{ fontWeight: "bold" }}>Total</Text>
-              <Text style={{ fontWeight: "bold" }}>€{getOrderTotalPrice(order)}</Text>
+              <Text style={{ fontWeight: "bold" }}>
+                €{getOrderTotalPrice(order)}
+              </Text>
             </View>
             <Pressable
               style={{
@@ -72,31 +88,39 @@ export default function OrderItemBox({ order: order }: BoxItemProps) {
         </View>
       </Modal>
       <View style={styles.container}>
-        <View style={{
-          height: 80,
-          width: 80,
-        }}>
+        <View
+          style={{
+            height: 80,
+            width: 80,
+          }}
+        >
           <Image source={{ uri: order.items[0].img }} style={styles.img} />
           {order.items.length > 1 && (
-            <View style={{
-              position: 'absolute',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 18,
-              backgroundColor: '#00000050',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-            }}>
-              <Text style={{ color: "white", fontSize: 26, fontWeight: "bold" }}>
+            <View
+              style={{
+                position: "absolute",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 18,
+                backgroundColor: "#00000050",
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 0,
+              }}
+            >
+              <Text
+                style={{ color: "white", fontSize: 26, fontWeight: "bold" }}
+              >
                 +{order.items.length - 1}
               </Text>
             </View>
           )}
         </View>
         <View style={{ marginLeft: 10, flex: 1 }}>
-          <Text style={styles.text} numberOfLines={1}>N° {order.id}</Text>
+          <Text style={styles.text} numberOfLines={1}>
+            Commande N° {order.id}
+          </Text>
           <Pressable
             style={styles.viewMoreButton}
             onPress={() => setModalVisible(!modalVisible)}
@@ -115,7 +139,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#00000080",
+    // backgroundColor: "#00000080",
   },
   modalView: {
     backgroundColor: "white",
@@ -145,8 +169,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
   },
-  textBox: {
-  },
+  textBox: {},
   upbox: {
     alignItems: "center",
     justifyContent: "space-between",

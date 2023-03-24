@@ -20,8 +20,35 @@ export default function ProfileScreen({
   navigation,
 }: RootTabScreenProps<"Profile">) {
   const dispatch = useDispatch();
-  const [user, setUser] = useState<User>();
-  const [orders, setOrders] = useState<Order[]>([]);
+  // const [user, setUser] = useState<User>();
+  const user: User = {
+    id: "aze",
+    address: "azezae",
+    name: "Alexandre",
+    uid: "123",
+    profilePic:
+      "https://www.pokekalos.fr/assets/images/jeux/or-argent/starters/hericendre.png",
+  };
+  // const [orders, setOrders] = useState<Order[]>([]);
+  const orders: Order[] = [
+    {
+      deliveryAddress: "12 rue de la rue",
+      items: [
+        {
+          brandID: "",
+          id: "",
+          img: "https://contents.mediadecathlon.com/p2155551/k$11e0e6f8f6f4906c580007288ce1bdd0/chaussure-jogging-homme-run-active-noir-jaune.jpg?format=auto&quality=40&f=800x800",
+          name: "Chaussure",
+          price: 123,
+          promo: 0,
+          quantity: 2,
+        },
+      ],
+      status: "En attente",
+      userID: "123",
+      id: "888",
+    },
+  ];
 
   useEffect(() => {
     // AsyncStorage.getItem("user")
@@ -42,17 +69,17 @@ export default function ProfileScreen({
     //   });
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      getOrders(user.uid).then((res) => {
-        console.log("Orders res: ", res);
-        setOrders(res);
-      });
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     getOrders(user.uid).then((res) => {
+  //       console.log("Orders res: ", res);
+  //       setOrders(res);
+  //     });
+  //   }
+  // }, [user]);
 
   return (
-    <ScrollView>
+    <>
       {user ? (
         <View style={styles.container}>
           <View style={styles.header}>
@@ -85,13 +112,14 @@ export default function ProfileScreen({
           style={{
             flex: 1,
             alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <ActivityIndicator size="large" />
-          <Text>Bonjour</Text>
+          <Text>Chargement ...</Text>
         </View>
       )}
-    </ScrollView>
+    </>
   );
 }
 
@@ -108,8 +136,9 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderColor: "#808080",
-    borderRadius: 300,
-    borderWidth: 4,
+    borderRadius: 10,
+    padding: 10,
+    borderWidth: 1,
   },
   profileInfos: {
     flex: 1,
