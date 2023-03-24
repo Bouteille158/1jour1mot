@@ -35,7 +35,8 @@
     "react-native-safe-area-context": "4.4.1",
     "react-native-screens": "~3.18.0",
     "react-native-web": "~0.18.9",
-    "react-redux": "^8.0.5"
+    "react-redux": "^8.0.5",
+    "surrealdb.js": "^0.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
