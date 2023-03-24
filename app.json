@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "shoes-lock-app",
-    "slug": "shoes-lock-app",
+    "name": "1jour-1mot-app",
+    "slug": "1jour-1mot-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -25,10 +25,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "de.bouteille93.app1jour1mot"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "891c6750-98cf-402a-93ce-3722a9c8da5a"
+      }
     }
   }
 }
