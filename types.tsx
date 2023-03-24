@@ -31,9 +31,9 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
 
 export type RootTabParamList = {
   TabOne: undefined;
-  Shop: undefined;
-  Cart: undefined;
-  Favorites: undefined;
+  WordGuess: undefined;
+  NewWord: undefined;
+  WordHistory: undefined;
   Profile: undefined;
 };
 

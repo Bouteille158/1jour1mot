@@ -22,7 +22,7 @@ import LoginScreen from "../screens/launcher/LoginScreen";
 import ModalScreen from "../screens/ModalScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import TabOneScreen from "../screens/TabOneScreen";
-import ShopScreen from "../screens/ShopScreen";
+import WordGuessScreen from "../screens/WordGuessScreen";
 import {
   RootStackParamList,
   RootTabParamList,
@@ -31,8 +31,8 @@ import {
 import LinkingConfiguration from "./LinkingConfiguration";
 import { Provider } from "react-redux/es/exports";
 import { store } from "../redux";
-import NewWordScreen from "../screens/CartScreen";
-import FavScreen from "../screens/FavScreen";
+import NewWordScreen from "../screens/NewWordScreen";
+import WordHistoryScreen from "../screens/WordHistoryScreen";
 import ProfileScreen from "../screens/profile/ProfileScreen";
 import ProfileSettingsScreen from "../screens/profile/ProfileSettingsScreen";
 import CircleIcon from "../components/atoms/circle-icon";
@@ -141,7 +141,7 @@ function BottomTabNavigator() {
   return (
     <Provider store={store}>
       <BottomTab.Navigator
-        initialRouteName="Shop"
+        initialRouteName="WordGuess"
         screenOptions={{
           tabBarActiveTintColor: "#000",
           tabBarInactiveTintColor: "#000",
@@ -149,7 +149,6 @@ function BottomTabNavigator() {
             // height: 60,
             paddingTop: 6,
           },
-          tabBarShowLabel: false,
         }}
       >
         {/* <BottomTab.Screen
@@ -166,10 +165,10 @@ function BottomTabNavigator() {
           }}
         /> */}
         <BottomTab.Screen
-          name="Shop"
-          component={ShopScreen}
+          name="NewWord"
+          component={NewWordScreen}
           options={{
-            title: "Shop",
+            title: "New word",
             headerStyle: {
               backgroundColor: "#ebebeb",
             },
@@ -181,10 +180,10 @@ function BottomTabNavigator() {
           }}
         />
         <BottomTab.Screen
-          name="Cart"
-          component={NewWordScreen}
+          name="WordGuess"
+          component={WordGuessScreen}
           options={{
-            title: "Cart",
+            title: "Guess",
             headerStyle: {
               backgroundColor: "#ebebeb",
             },
@@ -200,10 +199,10 @@ function BottomTabNavigator() {
           }}
         />
         <BottomTab.Screen
-          name="Favorites"
-          component={FavScreen}
+          name="WordHistory"
+          component={WordHistoryScreen}
           options={{
-            title: "Favorites",
+            title: "History",
             headerStyle: {
               backgroundColor: "#ebebeb",
             },

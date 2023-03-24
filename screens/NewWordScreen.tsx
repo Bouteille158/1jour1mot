@@ -10,7 +10,7 @@ import { addToCart, removeFromCart, RootState, updateCart } from "../redux";
 import { createOrder, Order } from "../services/order";
 import { getShoes, Shoe } from "../services/shoes";
 
-export default function CartScreen() {
+export default function NewWordScreen() {
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart);
   const favorites = useSelector((state: RootState) => state.favorites);

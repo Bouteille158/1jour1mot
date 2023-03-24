@@ -5,7 +5,7 @@ import ShopItem from "../components/ShopItem";
 import { Text, View } from "../components/Themed";
 import { getShoes, Shoe } from "../services/shoes";
 
-export default function ShopScreen() {
+export default function WordGuessScreen() {
   const [shoes, setShoes] = useState<Shoe[]>([]);
   useEffect(() => {
     getShoes().then((res) => {

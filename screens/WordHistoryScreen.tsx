@@ -7,7 +7,7 @@ import { Text, View } from "../components/Themed";
 import { addToCart, removeFromFavorites, RootState } from "../redux";
 import { getShoes, Shoe } from "../services/shoes";
 
-export default function FavScreen() {
+export default function WordHistoryScreen() {
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart);
   const favorites = useSelector((state: RootState) => state.favorites);
