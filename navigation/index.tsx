@@ -35,7 +35,6 @@ import NewWordScreen from "../screens/NewWordScreen";
 import WordHistoryScreen from "../screens/WordHistoryScreen";
 import ProfileScreen from "../screens/profile/ProfileScreen";
 import ProfileSettingsScreen from "../screens/profile/ProfileSettingsScreen";
-import CircleIcon from "../components/atoms/circle-icon";
 import { Feather } from "@expo/vector-icons";
 import Spacer from "../components/atoms/spacer";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -61,22 +60,16 @@ export default function Navigation({
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
-}
-
 const Header = () => {
+  const scheme = useColorScheme();
+  const theme = scheme === "dark" ? Colors.dark : Colors.light;
   return (
     <View style={{ flexDirection: "row" }}>
-      <Feather name="book-open" size={24} color="black" />
+      <Feather name="book-open" size={24} color={theme.text} />
       <Spacer width={10}></Spacer>
-      <Text style={{ fontWeight: "bold" }}>1 jour 1 mot</Text>
+      <Text style={{ fontWeight: "bold", color: theme.text }}>
+        1 jour 1 mot
+      </Text>
     </View>
   );
 };
@@ -136,8 +129,8 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
-
+  const scheme = useColorScheme();
+  const theme = scheme === "dark" ? Colors.dark : Colors.light;
   return (
     <Provider store={store}>
       <BottomTab.Navigator
@@ -146,7 +139,6 @@ function BottomTabNavigator() {
           tabBarActiveTintColor: "#000",
           tabBarInactiveTintColor: "#000",
           tabBarStyle: {
-            // height: 60,
             paddingTop: 6,
           },
         }}
@@ -157,7 +149,7 @@ function BottomTabNavigator() {
           options={{
             title: "Tab One",
             headerStyle: {
-              backgroundColor: "#ebebeb",
+              backgroundColor: theme.background,
             },
             headerTitle: () => <Header />,
             headerTitleAlign: "center",
@@ -170,12 +162,17 @@ function BottomTabNavigator() {
           options={{
             title: "New word",
             headerStyle: {
-              backgroundColor: "#ebebeb",
+              backgroundColor: theme.background,
             },
             headerTitle: () => <Header />,
             headerTitleAlign: "center",
-            tabBarIcon: ({ color }) => (
-              <Feather name="file-text" color="black" size={30} />
+            tabBarLabelStyle: { color: theme.text },
+            tabBarIcon: ({ focused }) => (
+              <Feather
+                name="file-text"
+                color={focused ? theme.tabIconSelected : theme.tabIconDefault}
+                size={30}
+              />
             ),
           }}
         />
@@ -185,15 +182,16 @@ function BottomTabNavigator() {
           options={{
             title: "Guess",
             headerStyle: {
-              backgroundColor: "#ebebeb",
+              backgroundColor: theme.background,
             },
             headerTitle: () => <Header />,
             headerTitleAlign: "center",
-            tabBarIcon: ({ color }) => (
+            tabBarLabelStyle: { color: theme.text },
+            tabBarIcon: ({ focused }) => (
               <MaterialCommunityIcons
                 name="form-textbox-password"
                 size={30}
-                color="black"
+                color={focused ? theme.tabIconSelected : theme.tabIconDefault}
               />
             ),
           }}
@@ -204,13 +202,19 @@ function BottomTabNavigator() {
           options={{
             title: "History",
             headerStyle: {
-              backgroundColor: "#ebebeb",
+              backgroundColor: theme.background,
             },
             headerTitle: () => <Header />,
             headerTitleAlign: "center",
-            tabBarIcon: ({ color }) => (
-              <Feather name="book" size={30} color="black" />
+            tabBarLabelStyle: { color: theme.text },
+            tabBarIcon: ({ focused }) => (
+              <Feather
+                name="book"
+                size={30}
+                color={focused ? theme.tabIconSelected : theme.tabIconDefault}
+              />
             ),
+            tabBarActiveTintColor: "blue",
           }}
         />
         <BottomTab.Screen
@@ -219,12 +223,17 @@ function BottomTabNavigator() {
           options={({ navigation }: RootTabScreenProps<"Profile">) => ({
             title: "Profile",
             headerStyle: {
-              backgroundColor: "#ebebeb",
+              backgroundColor: theme.background,
             },
             headerTitle: () => <Header />,
             headerTitleAlign: "center",
-            tabBarIcon: ({ color }) => (
-              <Feather name="user" size={30} color="black" />
+            tabBarLabelStyle: { color: theme.text },
+            tabBarIcon: ({ focused }) => (
+              <Feather
+                name="user"
+                size={30}
+                color={focused ? theme.tabIconSelected : theme.tabIconDefault}
+              />
             ),
             headerRight: () => (
               <Pressable
