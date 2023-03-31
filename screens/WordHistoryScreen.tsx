@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import Spacer from "../components/atoms/spacer";
+import Spacer from "../components/Spacer";
 import FavItemBox from "../components/organisms/fav-item-box";
 import { Text, View } from "../components/Themed";
 import { addToCart, removeFromFavorites, RootState } from "../redux";

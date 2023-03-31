@@ -1,15 +1,15 @@
 import { StyleSheet, Text, ScrollView, View } from "react-native";
 import React, { useState } from "react";
-import { auth } from "../../firebase";
 import { RootStackScreenProps } from "../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Input from "../../components/atoms/input";
+import InputCustom from "../../components/InputCustom";
 import BlueBox from "../../components/atoms/blue-box";
 import Button from "../../components/atoms/button";
-import Spacer from "../../components/atoms/spacer";
+import Spacer from "../../components/Spacer";
 import { useDispatch } from "react-redux";
 import { setGlobalUser } from "../../redux";
 import { createUser, User } from "../../services/users";
+import firebase from "../../firebase";
 
 export default function RegisterScreen({
   navigation,
@@ -21,14 +21,15 @@ export default function RegisterScreen({
   const [address, setAddress] = useState("");
 
   const register = (name: string, email: string, password: string) => {
-    auth
+    firebase
+      .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(async (credentials) => {
         const user = credentials.user;
         if (!user) throw new Error("User is null");
         const userToAdd: User = {
           uid: user.uid,
-          id: "",
+          id: "account:" + user.uid,
           name: name,
         };
         await createUser(userToAdd);
@@ -43,7 +44,10 @@ export default function RegisterScreen({
         });
         dispatch(setGlobalUser(user));
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        alert(error.message);
+        console.error(error);
+      });
   };
 
   const funcRegister = () => {
@@ -57,45 +61,36 @@ export default function RegisterScreen({
   return (
     <ScrollView>
       <View style={styles.container}>
-        <BlueBox>
-          <View style={styles.header}>
-            <Text style={styles.title}>Sign In</Text>
-          </View>
-          <View style={styles.box}>
-            <Text style={styles.label}>Name</Text>
-            <Input
-              placeholder="Name"
-              value={name}
-              onChange={(value) => setName(value)}
-            />
-            <Spacer height={10} />
-            <Text style={styles.label}>Email</Text>
-            <Input
-              placeholder="Email"
-              value={email}
-              onChange={(value) => setEmail(value)}
-            />
-            <Spacer height={10} />
-            <Text style={styles.label}>Password</Text>
-            <Input
-              placeholder="Password"
-              value={password}
-              onChange={(value) => setPassword(value)}
-              otherOptions={{ secureTextEntry: true }}
-            />
-            <Spacer height={10} />
-            <Text style={styles.label}>Address</Text>
-            <Input
-              placeholder="Address"
-              value={address}
-              onChange={(value) => setAddress(value)}
-            />
-            <Spacer height={10} />
-            <Button onPress={funcRegister}>
-              <Text style={styles.text}>Register</Text>
-            </Button>
-          </View>
-        </BlueBox>
+        <View style={styles.header}>
+          <Text style={styles.title}>Sign In</Text>
+        </View>
+        <View style={styles.box}>
+          <Text style={styles.label}>Name</Text>
+          <InputCustom
+            placeholder="Gérard"
+            value={name}
+            onChange={(value) => setName(value)}
+          />
+          <Spacer height={10} />
+          <Text style={styles.label}>Email</Text>
+          <InputCustom
+            placeholder="gerard@gmail.com"
+            value={email}
+            onChange={(value) => setEmail(value)}
+          />
+          <Spacer height={10} />
+          <Text style={styles.label}>Password</Text>
+          <InputCustom
+            placeholder="******"
+            value={password}
+            onChange={(value) => setPassword(value)}
+            otherOptions={{ secureTextEntry: true }}
+          />
+          <Spacer height={10} />
+          <Button onPress={funcRegister}>
+            <Text style={styles.text}>Register</Text>
+          </Button>
+        </View>
       </View>
     </ScrollView>
   );
@@ -114,6 +109,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 60,
     paddingTop: 20,
+    width: "100%",
   },
   header: {
     alignItems: "center",

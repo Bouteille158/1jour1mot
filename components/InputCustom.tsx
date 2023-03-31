@@ -9,7 +9,7 @@ interface ButtonProps {
   width?: string | number;
 }
 
-const Input = ({
+const InputCustom = ({
   onChange,
   value,
   placeholder,
@@ -27,7 +27,7 @@ const Input = ({
   );
 };
 
-export default Input;
+export default InputCustom;
 
 const styles = StyleSheet.create({
   input: {
@@ -35,5 +35,7 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 5,
     borderRadius: 4,
+    borderColor: "#ccc",
+    borderWidth: 1,
   },
 });

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../components/atoms/button";
-import Input from "../components/atoms/input";
-import Spacer from "../components/atoms/spacer";
+import InputCustom from "../components/InputCustom";
+import Spacer from "../components/Spacer";
 import CartItemBox from "../components/organisms/cart-item-box";
 import { Text, View } from "../components/Themed";
 import { addToCart, removeFromCart, RootState, updateCart } from "../redux";
@@ -73,7 +73,7 @@ export default function NewWordScreen() {
     finishOrderSection = (
       <>
         <View style={{ flexDirection: "row", backgroundColor: "#ff000000" }}>
-          <Input
+          <InputCustom
             value={promoCode}
             placeholder="PROMO CODE"
             onChange={(input) => {

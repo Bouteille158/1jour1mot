@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
-import Spacer from "../components/atoms/spacer";
+import Spacer from "../components/Spacer";
 import ShopItem from "../components/ShopItem";
 import { Text, View } from "../components/Themed";
 import { getShoes, Shoe } from "../services/shoes";

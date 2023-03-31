@@ -5,14 +5,14 @@ import { addToCart, addToFavorites, RootState } from "../redux";
 import { Shoe } from "../services/shoes";
 import CircleIcon from "./atoms/circle-icon";
 import { RootTabScreenProps } from "../types";
-import Spacer from "./atoms/spacer";
+import Spacer from "./Spacer";
 
 interface ShopItemProps {
   shoe: Shoe;
 }
 
 export default function ShopItem({ shoe }: ShopItemProps) {
-  const navigation = useNavigation<RootTabScreenProps<'Shop'>>();
+  const navigation = useNavigation<RootTabScreenProps<"Shop">>();
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart);
   const favorites = useSelector((state: RootState) => state.favorites);
@@ -20,12 +20,12 @@ export default function ShopItem({ shoe }: ShopItemProps) {
   function addItemToCart(): any {
     dispatch(addToCart(shoe));
     console.log("Cart : " + JSON.stringify(cart));
-    navigation.navigate('Cart');
+    navigation.navigate("Cart");
   }
   function addItemToFavorites(): any {
     dispatch(addToFavorites(shoe));
     console.log("Favorites : " + JSON.stringify(favorites));
-    navigation.navigate('Favorites');
+    navigation.navigate("Favorites");
   }
 
   return (

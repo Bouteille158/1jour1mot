@@ -10,7 +10,6 @@ import {
 import React, { useEffect } from "react";
 import { RootTabScreenProps } from "../../types";
 import { Order } from "../../services/order";
-import OrderItemBox from "../../components/organisms/order-item-box";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../../redux";
 import { useDispatch, useSelector } from "react-redux";
@@ -85,13 +84,13 @@ export default function ProfileScreen({
 
           <Text style={styles.ordersTitle}>Orders</Text>
 
-          <FlatList
+          {/* <FlatList
             data={orders}
             style={styles.orders}
             keyExtractor={(item, index) => item.id ?? index.toString()}
             renderItem={({ item }) => <OrderItemBox order={item} />}
             ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
-          />
+          /> */}
 
           <View>
             <Text></Text>

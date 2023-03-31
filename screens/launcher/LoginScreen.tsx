@@ -1,15 +1,17 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import firebase from "../../firebase";
 import { RootStackScreenProps } from "../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BlueBox from "../../components/atoms/blue-box";
-import Spacer from "../../components/atoms/spacer";
+import Spacer from "../../components/Spacer";
 import Button from "../../components/atoms/button";
-import Input from "../../components/atoms/input";
+import InputCustom from "../../components/InputCustom";
 import { getUser } from "../../services/users";
 import { useDispatch, useSelector } from "react-redux";
 import { activateLoginCheck, RootState, setGlobalUser } from "../../redux";
+import ButtonCustom from "../../components/ButtonCustom";
+import TextCustom from "../../components/TextCustom";
 
 export default function LoginScreen({
   navigation,
@@ -56,33 +58,39 @@ export default function LoginScreen({
   };
 
   return (
-    <View style={styles.container}>
-      <BlueBox>
+    <ScrollView>
+      <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Log in</Text>
+          <TextCustom size={22} isBold>
+            Log in
+          </TextCustom>
         </View>
         <View style={styles.box}>
-          <Text style={styles.label}>Email</Text>
-          <Input
+          <TextCustom size={14} padding={8}>
+            Email
+          </TextCustom>
+          <InputCustom
             placeholder="Email"
             value={email}
             onChange={(value) => setEmail(value)}
           />
           <Spacer height={10} />
-          <Text style={styles.label}>Password</Text>
-          <Input
+          <TextCustom size={14} padding={8}>
+            Password
+          </TextCustom>
+          <InputCustom
             placeholder="Password"
             value={password}
             onChange={(value) => setPassword(value)}
             otherOptions={{ secureTextEntry: true }}
           />
           <Spacer height={40} />
-          <Button onPress={funcLogin}>
-            <Text style={styles.text}>Login</Text>
-          </Button>
+          <ButtonCustom onPress={funcLogin} isBold>
+            Login
+          </ButtonCustom>
         </View>
-      </BlueBox>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -98,6 +106,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     padding: 60,
+    width: "100%",
   },
   header: {
     alignItems: "center",

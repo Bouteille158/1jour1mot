@@ -1,8 +1,8 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import { RootStackScreenProps } from "../../types";
-import SquareButton from "../../components/atoms/square-button";
-import Spacer from "../../components/atoms/spacer";
+import CustomButton from "../../components/ButtonCustom";
+import Spacer from "../../components/Spacer";
 import firebase from "../../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,6 +13,8 @@ import {
 } from "../../redux";
 import { getUser } from "../../services/users";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import TextCustom from "../../components/TextCustom";
+import WelcomeHeader from "../../components/WelcomeHeader";
 
 export default function LauncherScreen({
   navigation,
@@ -54,14 +56,31 @@ export default function LauncherScreen({
 
   return (
     <View style={styles.container}>
-      <View style={styles.box}>
-        <SquareButton onPress={() => navigation.navigate("Login")}>
-          Log in your account here !
-        </SquareButton>
-        <Spacer width={10} />
-        <SquareButton onPress={() => navigation.navigate("Register")}>
-          Not a member yet ? Register here !
-        </SquareButton>
+      <WelcomeHeader />
+      <View style={{ flex: 2 }}></View>
+      <View style={styles.buttonBox}>
+        <TextCustom>First time here ?</TextCustom>
+        <Spacer height={4} />
+        <CustomButton
+          onPress={() => navigation.navigate("Register")}
+          width="100%"
+          height={50}
+          isBold
+          showBorder
+        >
+          Create account
+        </CustomButton>
+        <Spacer height={10} />
+        <TextCustom>Already have an account ?</TextCustom>
+        <Spacer height={4} />
+        <CustomButton
+          onPress={() => navigation.navigate("Login")}
+          width="100%"
+          height={50}
+          isBold
+        >
+          Login
+        </CustomButton>
       </View>
     </View>
   );
@@ -70,12 +89,12 @@ export default function LauncherScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     padding: 40,
+    width: "100%",
   },
-  box: {
-    flexDirection: "row",
-    height: 160,
+  buttonBox: {
+    alignItems: "center",
+    width: "100%",
   },
 });

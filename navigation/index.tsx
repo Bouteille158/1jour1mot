@@ -36,7 +36,7 @@ import WordHistoryScreen from "../screens/WordHistoryScreen";
 import ProfileScreen from "../screens/profile/ProfileScreen";
 import ProfileSettingsScreen from "../screens/profile/ProfileSettingsScreen";
 import { Feather } from "@expo/vector-icons";
-import Spacer from "../components/atoms/spacer";
+import Spacer from "../components/Spacer";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function Navigation({
@@ -134,7 +134,7 @@ function BottomTabNavigator() {
   return (
     <Provider store={store}>
       <BottomTab.Navigator
-        initialRouteName="WordGuess"
+        initialRouteName="NewWord"
         screenOptions={{
           tabBarActiveTintColor: "#000",
           tabBarInactiveTintColor: "#000",
