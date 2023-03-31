@@ -1,15 +1,22 @@
-import { StyleSheet, Text, ScrollView, View } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import React, { useState } from "react";
 import { RootStackScreenProps } from "../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import InputCustom from "../../components/InputCustom";
-import BlueBox from "../../components/atoms/blue-box";
-import Button from "../../components/atoms/button";
 import Spacer from "../../components/Spacer";
 import { useDispatch } from "react-redux";
 import { setGlobalUser } from "../../redux";
 import { createUser, User } from "../../services/users";
 import firebase from "../../firebase";
+import TextCustom from "../../components/TextCustom";
+import ButtonCustom from "../../components/ButtonCustom";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 export default function RegisterScreen({
   navigation,
@@ -18,7 +25,6 @@ export default function RegisterScreen({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [address, setAddress] = useState("");
 
   const register = (name: string, email: string, password: string) => {
     firebase
@@ -58,41 +64,58 @@ export default function RegisterScreen({
     register(name, email, password);
   };
 
+  const headerHeight = useHeaderHeight();
+
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Sign In</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.select({ android: undefined, ios: "padding" })}
+      keyboardVerticalOffset={Platform.select({
+        android: headerHeight + 2000,
+        ios: headerHeight - 200,
+      })}
+    >
+      <ScrollView bounces={false}>
+        <View style={styles.container}>
+          <TextCustom size={22} isBold>
+            Sign in
+          </TextCustom>
+          <View style={styles.box}>
+            <TextCustom size={14} padding={8}>
+              Name
+            </TextCustom>
+            <InputCustom
+              placeholder="Gérard"
+              value={name}
+              onChange={(value) => setName(value)}
+            />
+            <Spacer height={10} />
+            <TextCustom size={14} padding={8}>
+              Email
+            </TextCustom>
+            <InputCustom
+              placeholder="gerard@gmail.com"
+              value={email}
+              onChange={(value) => setEmail(value)}
+            />
+            <Spacer height={10} />
+            <TextCustom size={14} padding={8}>
+              Password
+            </TextCustom>
+            <InputCustom
+              placeholder="******"
+              value={password}
+              onChange={(value) => setPassword(value)}
+              otherOptions={{ secureTextEntry: true }}
+            />
+            <Spacer height={40} />
+            <ButtonCustom onPress={funcRegister} isBold>
+              Register
+            </ButtonCustom>
+          </View>
         </View>
-        <View style={styles.box}>
-          <Text style={styles.label}>Name</Text>
-          <InputCustom
-            placeholder="Gérard"
-            value={name}
-            onChange={(value) => setName(value)}
-          />
-          <Spacer height={10} />
-          <Text style={styles.label}>Email</Text>
-          <InputCustom
-            placeholder="gerard@gmail.com"
-            value={email}
-            onChange={(value) => setEmail(value)}
-          />
-          <Spacer height={10} />
-          <Text style={styles.label}>Password</Text>
-          <InputCustom
-            placeholder="******"
-            value={password}
-            onChange={(value) => setPassword(value)}
-            otherOptions={{ secureTextEntry: true }}
-          />
-          <Spacer height={10} />
-          <Button onPress={funcRegister}>
-            <Text style={styles.text}>Register</Text>
-          </Button>
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -130,6 +153,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     padding: 8,
     color: "#fff",
-    textTransform: "uppercase",
+    // textTransform: "uppercase",
   },
 });

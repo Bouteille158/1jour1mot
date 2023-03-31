@@ -3,9 +3,7 @@ import React, { useState } from "react";
 import firebase from "../../firebase";
 import { RootStackScreenProps } from "../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import BlueBox from "../../components/atoms/blue-box";
 import Spacer from "../../components/Spacer";
-import Button from "../../components/atoms/button";
 import InputCustom from "../../components/InputCustom";
 import { getUser } from "../../services/users";
 import { useDispatch, useSelector } from "react-redux";
@@ -70,7 +68,7 @@ export default function LoginScreen({
             Email
           </TextCustom>
           <InputCustom
-            placeholder="Email"
+            placeholder="gerard@mail.com"
             value={email}
             onChange={(value) => setEmail(value)}
           />
@@ -79,7 +77,7 @@ export default function LoginScreen({
             Password
           </TextCustom>
           <InputCustom
-            placeholder="Password"
+            placeholder="*********"
             value={password}
             onChange={(value) => setPassword(value)}
             otherOptions={{ secureTextEntry: true }}

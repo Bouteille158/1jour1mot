@@ -1,5 +1,6 @@
 import React from "react";
-import { TextInput, StyleSheet } from "react-native";
+import { TextInput, StyleSheet, useColorScheme } from "react-native";
+import Colors from "../constants/Colors";
 
 interface ButtonProps {
   value: string;
@@ -16,9 +17,23 @@ const InputCustom = ({
   width,
   otherOptions,
 }: ButtonProps) => {
+  const scheme = useColorScheme();
+  const theme = scheme === "dark" ? Colors.dark : Colors.light;
+
+  const styles = StyleSheet.create({
+    input: {
+      backgroundColor: theme.textInputBackgroundColor,
+      height: 50,
+      padding: 5,
+      borderRadius: 4,
+      borderColor: "#ccc",
+      borderWidth: 1,
+    },
+  });
   return (
     <TextInput
       placeholder={placeholder}
+      placeholderTextColor={theme.textInputLabel}
       style={[styles.input, { width: width ? width : "100%" }]}
       value={value}
       onChangeText={onChange}
@@ -28,14 +43,3 @@ const InputCustom = ({
 };
 
 export default InputCustom;
-
-const styles = StyleSheet.create({
-  input: {
-    backgroundColor: "#fff",
-    height: 50,
-    padding: 5,
-    borderRadius: 4,
-    borderColor: "#ccc",
-    borderWidth: 1,
-  },
-});
