@@ -11,32 +11,33 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackScreenProps } from "../../types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, setGlobalUser } from "../../redux";
+import { updateUser, User } from "../../services/users";
+import firebase from "../../firebase";
 
 export default function ProfileSettingsScreen({
   navigation,
 }: RootStackScreenProps<"ProfileSettings">) {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
-  const [profilePic, setProfilePic] = useState(user.profilePic);
+  const [profilePic, setProfilePic] = useState(user.profilePicture);
   const [name, setName] = useState(user.name);
-  const [address, setAddress] = useState(user.address);
 
-  const updateUser = () => {
-    // fireDB
-    //   .collection("user")
-    //   .doc(user.id)
-    //   .update({
-    //     ...user,
-    //     name: name,
-    //     address: address,
-    //   })
-    //   .then(() => navigation.goBack())
-    //   .catch((err) => console.error(err));
+  const saveUserChange = () => {
+    console.log("Save change button pressed");
+    const userNewData: User = {
+      uid: user.uid,
+      id: user.id,
+      profilePicture: profilePic,
+      name: name,
+    };
+    updateUser(userNewData);
+    dispatch(setGlobalUser(userNewData));
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await firebase.auth().signOut();
     AsyncStorage.setItem("user", "").then(() => {
-      dispatch(setGlobalUser({ uid: "", address: "", name: "" }));
+      dispatch(setGlobalUser({ uid: "", id: "", name: "" }));
       navigation.reset({
         index: 0,
         routes: [{ name: "Launcher" }],
@@ -66,16 +67,7 @@ export default function ProfileSettingsScreen({
             onChangeText={(value) => setName(value)}
           />
         </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputName}>Address</Text>
-          <TextInput
-            placeholder="Address"
-            style={styles.inputField}
-            value={address}
-            onChangeText={(value) => setAddress(value)}
-          />
-        </View>
-        <Pressable style={styles.saveButton} onPress={() => updateUser()}>
+        <Pressable style={styles.saveButton} onPress={() => saveUserChange()}>
           <Text>Save</Text>
         </Pressable>
       </View>

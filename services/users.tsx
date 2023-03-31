@@ -1,8 +1,8 @@
 import { connectSurreal, db } from "../surrealdb";
 
 export async function getUser(uid: string): Promise<User> {
-  console.log("Getting user from SurrealDB");
-  console.log("Input uid : " + uid);
+  // console.log("Getting user from SurrealDB");
+  // console.log("Input uid : " + uid);
   let user: User = {
     uid: uid,
     id: "",
@@ -11,20 +11,20 @@ export async function getUser(uid: string): Promise<User> {
 
   const accountDetails: AccountDetails = await connectSurreal().then(
     async () => {
-      console.log("Quering SurrealDB for account:" + uid);
+      // console.log("Quering SurrealDB for account:" + uid);
       const res = await db.select("account:" + uid);
-      console.log("accountDetails res : ");
-      console.log(res);
-      console.log(typeof res);
+      // console.log("accountDetails res : ");
+      // console.log(res);
+      // console.log(typeof res);
 
       if (
         (res[0] as AccountDetails).created_at &&
         (res[0] as AccountDetails).id &&
         (res[0] as AccountDetails).name
       ) {
-        console.log("Type checked");
-        console.log(typeof res[0]);
-        console.log(res[0]);
+        // console.log("Type checked");
+        // console.log(typeof res[0]);
+        // console.log(res[0]);
         const accountDetails: AccountDetails = JSON.parse(
           JSON.stringify(res[0])
         );

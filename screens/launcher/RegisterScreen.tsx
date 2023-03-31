@@ -1,6 +1,6 @@
 import { StyleSheet, Text, ScrollView, View } from "react-native";
 import React, { useState } from "react";
-import { auth, fireDB } from "../../firebase";
+import { auth } from "../../firebase";
 import { RootStackScreenProps } from "../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Input from "../../components/atoms/input";
@@ -9,7 +9,7 @@ import Button from "../../components/atoms/button";
 import Spacer from "../../components/atoms/spacer";
 import { useDispatch } from "react-redux";
 import { setGlobalUser } from "../../redux";
-import { User } from "../../services/users";
+import { createUser, User } from "../../services/users";
 
 export default function RegisterScreen({
   navigation,
@@ -20,29 +20,18 @@ export default function RegisterScreen({
   const [password, setPassword] = useState("");
   const [address, setAddress] = useState("");
 
-  const register = (
-    name: string,
-    email: string,
-    password: string,
-    address: string
-  ) => {
+  const register = (name: string, email: string, password: string) => {
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(async (credentials) => {
         const user = credentials.user;
         if (!user) throw new Error("User is null");
-
         const userToAdd: User = {
           uid: user.uid,
+          id: "",
           name: name,
-          address: address,
         };
-
-        await fireDB.collection("user").add({
-          uid: user.uid,
-          name: name,
-          address: address,
-        });
+        await createUser(userToAdd);
         AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
 
         return userToAdd;
@@ -61,10 +50,10 @@ export default function RegisterScreen({
     if (name.trim() === "") return;
     if (email.trim() === "") return;
     if (password.trim() === "") return;
-    if (address.trim() === "") return;
 
-    register(name, email, password, address);
+    register(name, email, password);
   };
+
   return (
     <ScrollView>
       <View style={styles.container}>

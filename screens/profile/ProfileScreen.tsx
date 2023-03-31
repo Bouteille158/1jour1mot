@@ -2,34 +2,31 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
-  ScrollView,
   StyleSheet,
   Text,
   View,
+  Button,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { RootTabScreenProps } from "../../types";
-import { getOrders, Order } from "../../services/order";
+import { Order } from "../../services/order";
 import OrderItemBox from "../../components/organisms/order-item-box";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { User } from "../../services/users";
-import { setGlobalUser } from "../../redux";
-import { useDispatch } from "react-redux";
+import { RootState } from "../../redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function ProfileScreen({
   navigation,
 }: RootTabScreenProps<"Profile">) {
   const dispatch = useDispatch();
-  // const [user, setUser] = useState<User>();
-  const user: User = {
-    id: "aze",
-    address: "azezae",
-    name: "Alexandre",
-    uid: "123",
-    profilePic:
-      "https://www.pokekalos.fr/assets/images/jeux/or-argent/starters/hericendre.png",
-  };
-  // const [orders, setOrders] = useState<Order[]>([]);
+  const user = useSelector((state: RootState) => state.user);
+  // const user: User = {
+  //   id: "aze",
+  //   name: "Alexandre",
+  //   uid: "123",
+  //   profilePic:
+  //     "https://www.pokekalos.fr/assets/images/jeux/or-argent/starters/hericendre.png",
+  // };
   const orders: Order[] = [
     {
       deliveryAddress: "12 rue de la rue",
@@ -51,49 +48,38 @@ export default function ProfileScreen({
   ];
 
   useEffect(() => {
-    // AsyncStorage.getItem("user")
-    //   .then((value) => JSON.parse(value!).uid)
-    //   .then((uid) => {
-    //     fireDB
-    //       .collection("user")
-    //       .where("uid", "==", uid)
-    //       .onSnapshot((res) => {
-    //         const user = {
-    //           ...res.docs[0].data(),
-    //           id: res.docs[0].id,
-    //         } as any;
-    //         dispatch(setGlobalUser(user));
-    //         setUser(user);
-    //         getOrders(user.uid).then((res) => setOrders(res));
-    //       });
-    //   });
-  }, []);
-
-  // useEffect(() => {
-  //   if (user) {
-  //     getOrders(user.uid).then((res) => {
-  //       console.log("Orders res: ", res);
-  //       setOrders(res);
-  //     });
-  //   }
-  // }, [user]);
+    AsyncStorage.getItem("user").then((value) => {
+      if (value) {
+        console.log("User found in async storage");
+        console.log(user);
+      }
+    });
+  }, [user]);
 
   return (
     <>
+      <View>
+        <Button
+          title="User"
+          onPress={async () => {
+            console.log("Button pressed");
+          }}
+        ></Button>
+      </View>
       {user ? (
         <View style={styles.container}>
           <View style={styles.header}>
             <Image
               source={
-                user.profilePic
-                  ? { uri: user.profilePic }
+                user.profilePicture
+                  ? { uri: user.profilePicture }
                   : require("../../assets/images/user-icon.png")
               }
               style={styles.profilePic}
             />
             <View style={styles.profileInfos}>
               <Text style={styles.profileName}>{user.name}</Text>
-              <Text style={styles.profileAddress}>{user.address}</Text>
+              {/* <Text style={styles.profileAddress}>{user.address}</Text> */}
             </View>
           </View>
 
@@ -106,6 +92,10 @@ export default function ProfileScreen({
             renderItem={({ item }) => <OrderItemBox order={item} />}
             ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
           />
+
+          <View>
+            <Text></Text>
+          </View>
         </View>
       ) : (
         <View

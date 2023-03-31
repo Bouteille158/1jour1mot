@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
-import { auth } from "../../firebase";
+import firebase from "../../firebase";
 import { RootStackScreenProps } from "../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BlueBox from "../../components/atoms/blue-box";
@@ -9,7 +9,7 @@ import Button from "../../components/atoms/button";
 import Input from "../../components/atoms/input";
 import { getUser } from "../../services/users";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState, setGlobalUser } from "../../redux";
+import { activateLoginCheck, RootState, setGlobalUser } from "../../redux";
 
 export default function LoginScreen({
   navigation,
@@ -26,34 +26,33 @@ export default function LoginScreen({
     login(email, password);
   };
 
-  const login = (email: string, password: string) => {
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then((credentials) => {
-        const user = credentials.user;
-        if (!user) throw new Error("User is null");
+  const login = async (email: string, password: string) => {
+    try {
+      if (!email || !password) {
+        throw new Error("Please provide both email and password");
+      }
+      const credentials = await firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password);
+      const user = credentials.user;
+      if (!user) {
+        alert("Failed to sign in user");
+        throw new Error("Failed to sign in user");
+      }
+      const userFromDB = await getUser(user.uid);
+      await AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Root" }],
+      });
+      dispatch(setGlobalUser(userFromDB));
 
-        AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
-        return user;
-      })
-      .then(() => {
-        AsyncStorage.getItem("user").then((value) => {
-          if (value) {
-            // const user = JSON.parse(value);
+      dispatch(activateLoginCheck());
+    } catch (error: Error | any) {
+      console.error(error);
 
-            getUser(JSON.parse(value).uid).then((value) => {
-              console.log("Value id : ", value.uid);
-              dispatch(setGlobalUser(value));
-              navigation.reset({
-                index: 0,
-                routes: [{ name: "Root" }],
-              });
-              console.log("Login user : ", user);
-            });
-          }
-        });
-      })
-      .catch((error) => console.error(error));
+      alert(error.message);
+    }
   };
 
   return (

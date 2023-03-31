@@ -1,37 +1,55 @@
-import { Button, StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import { RootStackScreenProps } from "../../types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import SquareButton from "../../components/atoms/square-button";
 import Spacer from "../../components/atoms/spacer";
+import firebase from "../../firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState, setGlobalUser } from "../../redux";
+import {
+  activateLoginCheck,
+  deactivateLoginCheck,
+  RootState,
+  setGlobalUser,
+} from "../../redux";
 import { getUser } from "../../services/users";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LauncherScreen({
   navigation,
 }: RootStackScreenProps<"Launcher">) {
   const dispatch = useDispatch();
+  const LoginCheck = useSelector((state: RootState) => state.loginCheck);
+
+  const [isSignedIn, setisSignedIn] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem("user").then((value) => {
-      if (value) {
-        // const user = JSON.parse(value);
-
-        getUser(JSON.parse(value).uid)
-          .then((value) => {
-            console.log("Value id : ", value.uid);
-            dispatch(setGlobalUser(value));
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "Root" }],
-            });
-          })
-          .catch((err) => {
-            console.error(err);
+    console.log("Already checked login : " + LoginCheck.toString());
+    if (!LoginCheck) {
+      dispatch(deactivateLoginCheck());
+      firebase.auth().onAuthStateChanged(async (user) => {
+        if (!user) {
+          if (isSignedIn) {
+            console.log("Déconnexion de l'utilisateur :");
+            console.log(user);
+            setisSignedIn(false);
+          } else {
+            console.log("Utilisateur déjà déconnecté !");
+          }
+        } else {
+          console.log("Changement d'état de l'utilisateur :");
+          console.log(user);
+          setisSignedIn(true);
+          const userFromDB = await getUser(user.uid);
+          AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Root" }],
           });
-      }
-    });
+          dispatch(setGlobalUser(userFromDB));
+          dispatch(activateLoginCheck());
+        }
+      });
+    }
   }, []);
 
   return (

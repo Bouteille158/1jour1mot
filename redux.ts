@@ -113,9 +113,26 @@ const userSlice = createSlice({
   initialState: {} as User,
   reducers: {
     setGlobalUser: (state, action: PayloadAction<User>) => {
-      console.log("Action payload : ", action.payload);
+      // console.log("Action payload : ", action.payload);
       state = action.payload;
       console.log("New user state : ", state);
+      return state;
+    },
+  },
+});
+
+const loginCheckSlice = createSlice({
+  name: "loginCheck",
+  initialState: false,
+  reducers: {
+    activateLoginCheck: (state) => {
+      console.log("Activate login check");
+      state = true;
+      return state;
+    },
+    deactivateLoginCheck: (state) => {
+      console.log("Deactivate login check");
+      state = false;
       return state;
     },
   },
@@ -124,12 +141,15 @@ const userSlice = createSlice({
 export const { addToCart, removeFromCart, updateCart } = cartSlice.actions;
 export const { addToFavorites, removeFromFavorites } = favoritesSlice.actions;
 export const { setGlobalUser } = userSlice.actions;
+export const { activateLoginCheck, deactivateLoginCheck } =
+  loginCheckSlice.actions;
 
 export const store = configureStore({
   reducer: {
     cart: cartSlice.reducer,
     favorites: favoritesSlice.reducer,
     user: userSlice.reducer,
+    loginCheck: loginCheckSlice.reducer,
   },
 });
 
