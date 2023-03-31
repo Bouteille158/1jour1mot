@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Spacer from "../components/Spacer";
-import FavItemBox from "../components/organisms/fav-item-box";
 import { Text, View } from "../components/Themed";
 import { addToCart, removeFromFavorites, RootState } from "../redux";
-import { getShoes, Shoe } from "../services/shoes";
+import { Shoe } from "../services/shoes";
 
 export default function WordHistoryScreen() {
   const dispatch = useDispatch();
@@ -27,23 +25,6 @@ export default function WordHistoryScreen() {
       <View style={styles.container}>
         <Text style={styles.title}>Favorites</Text>
         <Spacer height={40} />
-        <View style={styles.list}>
-          {favorites.map((shoe, index) => (
-            <FavItemBox
-              key={index}
-              item={shoe}
-              removeItem={(id: string) => {
-                removeItemFromFavorites(id);
-              }}
-              addToCart={(shoe: Shoe) => {
-                addItemToCart(shoe);
-              }}
-            />
-          ))}
-          {favorites.length === 0 && (
-            <Text style={{ textAlign: "center" }}>No favorites</Text>
-          )}
-        </View>
       </View>
     </ScrollView>
   );

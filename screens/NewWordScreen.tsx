@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "../components/atoms/button";
 import InputCustom from "../components/InputCustom";
 import Spacer from "../components/Spacer";
-import CartItemBox from "../components/organisms/cart-item-box";
 import { Text, View } from "../components/Themed";
 import { addToCart, removeFromCart, RootState, updateCart } from "../redux";
 import { createOrder, Order } from "../services/order";
@@ -43,7 +42,7 @@ export default function NewWordScreen() {
   function createNewOrder(): any {
     const newOrder: Order = {
       items: cart,
-      deliveryAddress: user.address,
+      deliveryAddress: "",
       status: "pending",
       userID: user.uid,
     };
@@ -110,25 +109,7 @@ export default function NewWordScreen() {
       <View style={styles.container}>
         <Text style={styles.title}>Cart</Text>
         <Spacer height={40} />
-        <View style={styles.list}>
-          {cart.map((shoe) => (
-            <CartItemBox
-              key={shoe.id}
-              item={shoe}
-              removeItem={(id: string, removeAll?: boolean) => {
-                removeItemFromCart(id, removeAll);
-              }}
-              addItem={(shoe: Shoe) => {
-                addItemToCart(shoe);
-              }}
-            />
-          ))}
-          {cart.length === 0 && (
-            <Text style={{ textAlign: "center" }}>
-              You have no item in your cart ! Check out the shop !
-            </Text>
-          )}
-        </View>
+
         <View
           style={{
             justifyContent: "center",
