@@ -3,7 +3,6 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   NavigationContainer,
@@ -12,7 +11,13 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName, Pressable, Text, View } from "react-native";
+import {
+  ColorSchemeName,
+  Pressable,
+  Text,
+  View,
+  StyleSheet,
+} from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -60,28 +65,56 @@ export default function Navigation({
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const Header = () => {
+interface HeaderProps {
+  children: string;
+  icon?: any;
+}
+
+const Header = (props: HeaderProps) => {
   const scheme = useColorScheme();
   const theme = scheme === "dark" ? Colors.dark : Colors.light;
-  return (
-    <View style={{ flexDirection: "row" }}>
-      <Feather name="book-open" size={24} color={theme.text} />
-      <Spacer width={10}></Spacer>
+
+  if (props.icon) {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {props.icon}
+        <Spacer width={5}></Spacer>
+        <Text style={{ fontWeight: "bold", color: theme.text }}>
+          {props.children}
+        </Text>
+      </View>
+    );
+  } else {
+    return (
       <Text style={{ fontWeight: "bold", color: theme.text }}>
-        1 jour 1 mot
+        {props.children}
       </Text>
-    </View>
-  );
+    );
+  }
 };
 
 function RootNavigator() {
+  const scheme = useColorScheme();
+  const theme = scheme === "dark" ? Colors.dark : Colors.light;
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="Launcher"
         component={LauncherScreen}
         options={{
-          headerTitle: () => <Header />,
+          headerTitle: () => (
+            <Header
+              icon={<Feather name="book-open" size={24} color={theme.text} />}
+            >
+              Bienvenue
+            </Header>
+          ),
           headerTitleAlign: "center",
         }}
       />
@@ -89,7 +122,7 @@ function RootNavigator() {
         name="Register"
         component={RegisterScreen}
         options={{
-          headerTitle: () => <Header />,
+          headerTitle: () => <Header>Création de compte</Header>,
           headerTitleAlign: "center",
         }}
       />
@@ -97,7 +130,7 @@ function RootNavigator() {
         name="Login"
         component={LoginScreen}
         options={{
-          headerTitle: () => <Header />,
+          headerTitle: () => <Header>Connexion</Header>,
           headerTitleAlign: "center",
         }}
       />
@@ -115,6 +148,9 @@ function RootNavigator() {
         <Stack.Screen name="Modal" component={ModalScreen} />
         <Stack.Screen
           name="ProfileSettings"
+          options={{
+            title: "Paramètres du profil",
+          }}
           component={ProfileSettingsScreen}
         />
       </Stack.Group>
@@ -138,9 +174,6 @@ function BottomTabNavigator() {
         screenOptions={{
           tabBarActiveTintColor: "#000",
           tabBarInactiveTintColor: "#000",
-          tabBarStyle: {
-            paddingTop: 6,
-          },
         }}
       >
         {/* <BottomTab.Screen
@@ -153,18 +186,31 @@ function BottomTabNavigator() {
             },
             headerTitle: () => <Header />,
             headerTitleAlign: "center",
-            tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+            tabBarIcon: ({ color }) => <Feather name="code" color={color} />,
           }}
         /> */}
         <BottomTab.Screen
           name="NewWord"
           component={NewWordScreen}
           options={{
-            title: "New word",
+            title: "Le mot du jour",
             headerStyle: {
               backgroundColor: theme.background,
             },
-            headerTitle: () => <Header />,
+            headerTitle: () => (
+              <Header
+                icon={
+                  <Feather
+                    name="file-text"
+                    color={theme.tabIconDefault}
+                    size={30}
+                    style={styles.icon}
+                  />
+                }
+              >
+                Le mot du jour
+              </Header>
+            ),
             headerTitleAlign: "center",
             tabBarLabelStyle: { color: theme.text },
             tabBarIcon: ({ focused }) => (
@@ -172,6 +218,7 @@ function BottomTabNavigator() {
                 name="file-text"
                 color={focused ? theme.tabIconSelected : theme.tabIconDefault}
                 size={30}
+                style={styles.icon}
               />
             ),
           }}
@@ -180,11 +227,24 @@ function BottomTabNavigator() {
           name="WordGuess"
           component={WordGuessScreen}
           options={{
-            title: "Guess",
+            title: "Le mot caché",
             headerStyle: {
               backgroundColor: theme.background,
             },
-            headerTitle: () => <Header />,
+            headerTitle: () => (
+              <Header
+                icon={
+                  <MaterialCommunityIcons
+                    name="form-textbox-password"
+                    size={30}
+                    color={theme.tabIconDefault}
+                    style={styles.icon}
+                  />
+                }
+              >
+                Le mot caché
+              </Header>
+            ),
             headerTitleAlign: "center",
             tabBarLabelStyle: { color: theme.text },
             tabBarIcon: ({ focused }) => (
@@ -192,6 +252,7 @@ function BottomTabNavigator() {
                 name="form-textbox-password"
                 size={30}
                 color={focused ? theme.tabIconSelected : theme.tabIconDefault}
+                style={styles.icon}
               />
             ),
           }}
@@ -200,11 +261,24 @@ function BottomTabNavigator() {
           name="WordHistory"
           component={WordHistoryScreen}
           options={{
-            title: "History",
+            title: "Historique",
             headerStyle: {
               backgroundColor: theme.background,
             },
-            headerTitle: () => <Header />,
+            headerTitle: () => (
+              <Header
+                icon={
+                  <Feather
+                    name="book"
+                    size={30}
+                    color={theme.tabIconDefault}
+                    style={styles.icon}
+                  />
+                }
+              >
+                Historique
+              </Header>
+            ),
             headerTitleAlign: "center",
             tabBarLabelStyle: { color: theme.text },
             tabBarIcon: ({ focused }) => (
@@ -212,6 +286,7 @@ function BottomTabNavigator() {
                 name="book"
                 size={30}
                 color={focused ? theme.tabIconSelected : theme.tabIconDefault}
+                style={styles.icon}
               />
             ),
             tabBarActiveTintColor: "blue",
@@ -221,11 +296,24 @@ function BottomTabNavigator() {
           name="Profile"
           component={ProfileScreen}
           options={({ navigation }: RootTabScreenProps<"Profile">) => ({
-            title: "Profile",
+            title: "Profil",
             headerStyle: {
               backgroundColor: theme.background,
             },
-            headerTitle: () => <Header />,
+            headerTitle: () => (
+              <Header
+                icon={
+                  <Feather
+                    name="user"
+                    size={30}
+                    color={theme.tabIconDefault}
+                    style={styles.icon}
+                  />
+                }
+              >
+                Profil
+              </Header>
+            ),
             headerTitleAlign: "center",
             tabBarLabelStyle: { color: theme.text },
             tabBarIcon: ({ focused }) => (
@@ -233,6 +321,7 @@ function BottomTabNavigator() {
                 name="user"
                 size={30}
                 color={focused ? theme.tabIconSelected : theme.tabIconDefault}
+                style={styles.icon}
               />
             ),
             headerRight: () => (
@@ -256,3 +345,10 @@ function BottomTabNavigator() {
     </Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  icon: {
+    width: 30,
+    height: 30,
+  },
+});
