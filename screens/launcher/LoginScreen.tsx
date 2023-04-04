@@ -2,22 +2,16 @@ import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import firebase from "../../firebase";
 import { RootStackScreenProps } from "../../types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Spacer from "../../components/Spacer";
 import InputCustom from "../../components/InputCustom";
-import { getUser } from "../../services/users";
-import { useDispatch, useSelector } from "react-redux";
-import { activateLoginCheck, RootState, setGlobalUser } from "../../redux";
+import { useDispatch } from "react-redux";
 import ButtonCustom from "../../components/ButtonCustom";
 import TextCustom from "../../components/TextCustom";
 
-export default function LoginScreen({
-  navigation,
-}: RootStackScreenProps<"Login">) {
+export default function LoginScreen({}: RootStackScreenProps<"Login">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.user);
 
   const funcLogin = () => {
     if (email.trim() === "") return;
@@ -39,15 +33,6 @@ export default function LoginScreen({
         alert("Failed to sign in user");
         throw new Error("Failed to sign in user");
       }
-      const userFromDB = await getUser(user.uid);
-      await AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Root" }],
-      });
-      dispatch(setGlobalUser(userFromDB));
-
-      dispatch(activateLoginCheck());
     } catch (error: Error | any) {
       console.error(error);
 

@@ -41,14 +41,30 @@ export default function LauncherScreen({
           console.log("Changement d'état de l'utilisateur :");
           console.log(user);
           setisSignedIn(true);
-          const userFromDB = await getUser(user.uid);
-          AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Root" }],
+          const userFromDB = await getUser(user.uid).catch(async (err) => {
+            alert(
+              "Erreur lors de la récupération des données de l'utilisateur"
+            );
+            console.error(err);
+            await firebase.auth().signOut();
+            AsyncStorage.setItem("user", "").then(() => {
+              dispatch(setGlobalUser({ uid: "", id: "", name: "" }));
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "Launcher" }],
+              });
+            });
           });
-          dispatch(setGlobalUser(userFromDB));
-          dispatch(activateLoginCheck());
+
+          if (userFromDB) {
+            AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Root" }],
+            });
+            dispatch(setGlobalUser(userFromDB));
+            dispatch(activateLoginCheck());
+          }
         }
       });
     }
