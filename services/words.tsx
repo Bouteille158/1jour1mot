@@ -69,7 +69,7 @@ export async function importNewWordFromDicolink(
   });
 }
 
-interface Word {
+export interface Word {
   word: string;
   definitions: Definition[];
   scoreScrabble: number;

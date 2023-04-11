@@ -12,6 +12,14 @@ import { RootTabScreenProps } from "../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../../redux";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  getCurrentDayWordFromSurreal,
+  getTodayWordForEndUser,
+  importNewWordFromDicolink,
+} from "../../services/words";
+import { getNewWordFromDicolink } from "../../services/dicolink";
+import TextCustom from "../../components/TextCustom";
+import { getSurrealCompatibleDate } from "../../surrealdb";
 
 export default function ProfileScreen({
   navigation,
@@ -30,14 +38,6 @@ export default function ProfileScreen({
 
   return (
     <>
-      {/* <View>
-        <Button
-          title="User"
-          onPress={async () => {
-            console.log("Button pressed");
-          }}
-        ></Button>
-      </View> */}
       {user ? (
         <View style={styles.container}>
           <View style={styles.header}>
@@ -51,7 +51,19 @@ export default function ProfileScreen({
             />
             <View style={styles.profileInfos}>
               <Text style={styles.profileName}>{user.name}</Text>
+              <TextCustom>{user.id}</TextCustom>
             </View>
+          </View>
+          <View>
+            <Button
+              title="Activate function"
+              onPress={async () => {
+                console.log("Button pressed");
+                getTodayWordForEndUser(user.id).then((res) => {
+                  console.log("res: ", res);
+                });
+              }}
+            ></Button>
           </View>
         </View>
       ) : (
