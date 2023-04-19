@@ -41,6 +41,47 @@ export async function getTodayWordForEndUser(
     return word as Word;
   }
 
+  if (!word.id) {
+    throw new Error("Word id is not defined");
+  }
+
+  console.log("User account id : " + userAccountID);
+
+  await connectSurreal().then(async () => {
+    const wordRelation: RelateResponse<LearnsRelation> | void = await db
+      .query("SELECT ->learns->word FROM " + userAccountID)
+      .then((res: any) => {
+        console.log("Word relation : ");
+        console.log(JSON.stringify(res));
+        console.log(res[0].status);
+        if (res[0].status === "ERR") {
+          console.log("Error while getting word relation : " + res[0].result);
+          throw new Error(
+            "Error while getting word relation : " + res[0].result
+          );
+        }
+
+        return res as RelateResponse<LearnsRelation>;
+      })
+      .catch((err) => {
+        console.log("Catched error : " + err);
+        return;
+      });
+
+    if (!wordRelation) {
+      console.error("Word relation is not defined");
+      return word as Word;
+    }
+
+    // const res = await db.query("").catch(async (err) => {
+    //   console.log("Error while getting word relation : " + err);
+    //   return;
+    // });
+
+    console.log("Current users new word : ");
+    console.log(JSON.stringify(wordRelation));
+  });
+
   return word as Word;
 }
 
@@ -77,4 +118,16 @@ export interface Word {
   updated_at: string;
   created_by: string;
   id?: string;
+}
+
+export interface RelateResponse<T> {
+  time: string;
+  status: string;
+  result: [T];
+}
+
+export interface LearnsRelation {
+  "->learns": {
+    "->word": [string];
+  };
 }
