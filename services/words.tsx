@@ -51,44 +51,50 @@ export async function getTodayWordForEndUser(
     throw new Error("Word id is not defined");
   }
 
-  console.log("User account id : " + userAccountID);
-
-  await connectSurreal().then(async () => {
-    const wordRelation: RelateResponse<LearnsRelation> | void = await db
-      .query("SELECT ->learns->word FROM " + userAccountID)
-      .then((res: any) => {
-        console.log("Word relation : ");
-        console.log(JSON.stringify(res));
-        console.log(res[0].status);
-        if (res[0].status === "ERR") {
-          console.log("Error while getting word relation : " + res[0].result);
-          throw new Error(
-            "Error while getting word relation : " + res[0].result
-          );
-        }
-
-        return res as RelateResponse<LearnsRelation>;
-      })
-      .catch((err) => {
-        console.log("Catched error : " + err);
-        return;
-      });
-
-    if (!wordRelation) {
-      console.error("Word relation is not defined");
-      return word as Word;
-    }
-
-    // const res = await db.query("").catch(async (err) => {
-    //   console.log("Error while getting word relation : " + err);
-    //   return;
-    // });
-
-    console.log("Current users new word : ");
-    console.log(JSON.stringify(wordRelation));
-  });
+  getLearningWordListForAccount(userAccountID);
 
   return word as Word;
+}
+
+export async function getLearningWordListForAccount(
+  userAccountID: string
+): Promise<string[] | void> {
+  // console.log("\n\n      Start of getWordRelations");
+  await connectSurreal().then(async () => {
+    const res: RelateResponse<LearnsRelation> | null = await db
+      .query("SELECT ->learns->word FROM " + userAccountID)
+      .then((res: any) => {
+        // console.log("Word relation : ");
+        // console.log(JSON.stringify(res));
+        if (res[0].status === "ERR") {
+          console.error("Error while getting word relation : " + res[0]);
+          throw new Error("Error while getting word relation : " + res[0]);
+        }
+        return res[0] as RelateResponse<LearnsRelation>;
+      })
+      .catch((err) => {
+        console.error("Catched error : " + err);
+        return null;
+      });
+
+    if (!res) {
+      console.error("No result for word relation request");
+      return null;
+    }
+
+    // console.log("Res : " + JSON.stringify(res));
+    const parsedRes: RelateResponse<LearnsRelation> = JSON.parse(
+      JSON.stringify(res)
+    );
+    const learnedWordsIdList = res.result[0]["->learns"]["->word"];
+
+    // console.log("Parsed res : " + JSON.stringify(parsedRes));
+    // console.log("Learned words id list" + JSON.stringify(learnedWordsIdList));
+
+    // console.log("End of getWordRelations");
+
+    return learnedWordsIdList;
+  });
 }
 
 export async function importNewWordFromDicolink(
