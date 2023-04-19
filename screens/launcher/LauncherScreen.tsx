@@ -32,14 +32,14 @@ export default function LauncherScreen({
         if (!user) {
           if (isSignedIn) {
             console.log("Déconnexion de l'utilisateur :");
-            console.log(user);
+            // console.log(user);
             setisSignedIn(false);
           } else {
             console.log("Utilisateur déjà déconnecté !");
           }
         } else {
           console.log("Changement d'état de l'utilisateur :");
-          console.log(user);
+          // console.log(user);
           setisSignedIn(true);
           const userFromDB = await getUser(user.uid).catch(async (err) => {
             alert(

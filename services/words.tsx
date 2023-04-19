@@ -36,14 +36,14 @@ export async function getTodayWordForEndUser(
   const word = await getCurrentDayWordFromSurreal();
 
   console.log("Word first phase : ");
-  console.log(word);
+  console.log(word?.word);
 
   if (!word) {
     const newWord = await getNewWordFromDicolink();
     await importNewWordFromDicolink(newWord, userAccountID);
     const word = await getCurrentDayWordFromSurreal();
     console.log("Word second phase : ");
-    console.log(word);
+    console.log(word?.word);
     return word as Word;
   }
 

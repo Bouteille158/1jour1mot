@@ -14,11 +14,15 @@ export default function NewWordScreen() {
   const [currentDate, setCurrentDate] = useState(moment());
 
   useEffect(() => {
-    getTodayWordForEndUser(user.id).then((res) => {
-      console.log("res: ", res);
-      setWord(res);
-      console.log("Word : ", word);
-    });
+    getTodayWordForEndUser(user.id)
+      .then((res) => {
+        // console.log("res: ", res);
+        setWord(res);
+        // console.log("Word : ", word);
+      })
+      .catch((err) => {
+        console.log("Error : ", err);
+      });
     const intervalId = setInterval(() => {
       const newDate = moment();
       if (!newDate.isSame(currentDate, "day")) {

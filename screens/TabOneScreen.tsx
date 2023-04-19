@@ -11,7 +11,6 @@ import {
   removeFromCart,
   removeFromFavorites,
   RootState,
-  setGlobalUser,
   updateCart,
 } from "../redux";
 import {
