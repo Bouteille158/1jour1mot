@@ -58,12 +58,12 @@ export default function LauncherScreen({
 
           if (userFromDB) {
             AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
+            dispatch(setGlobalUser(userFromDB));
+            dispatch(activateLoginCheck());
             navigation.reset({
               index: 0,
               routes: [{ name: "Root" }],
             });
-            dispatch(setGlobalUser(userFromDB));
-            dispatch(activateLoginCheck());
           }
         }
       });

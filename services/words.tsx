@@ -27,6 +27,12 @@ export async function getCurrentDayWordFromSurreal(): Promise<Word | null> {
 export async function getTodayWordForEndUser(
   userAccountID: string
 ): Promise<Word> {
+  console.log("User account id : " + userAccountID);
+  if (!userAccountID) {
+    console.error("User account id is not defined");
+    throw new Error("User account id is not defined");
+  }
+
   const word = await getCurrentDayWordFromSurreal();
 
   console.log("Word first phase : ");
