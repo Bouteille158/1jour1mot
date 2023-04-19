@@ -51,17 +51,26 @@ export async function getTodayWordForEndUser(
     throw new Error("Word id is not defined");
   }
 
-  getLearningWordListForAccount(userAccountID);
+  const learnedWordsList = await getLearningWordListForAccount(userAccountID);
+  console.log("Learned words list : ");
+  console.log(learnedWordsList);
+
+  if (!learnedWordsList) {
+    console.log("Learned words list is null");
+  } else if (learnedWordsList instanceof Error) {
+    console.error("Error while getting learned words list");
+    alert("Error while getting learned words list");
+  }
 
   return word as Word;
 }
 
 export async function getLearningWordListForAccount(
   userAccountID: string
-): Promise<string[] | void> {
+): Promise<string[] | Error> {
   // console.log("\n\n      Start of getWordRelations");
-  await connectSurreal().then(async () => {
-    const res: RelateResponse<LearnsRelation> | null = await db
+  return await connectSurreal().then(async () => {
+    const res: RelateResponse<LearnsRelation> | Error = await db
       .query("SELECT ->learns->word FROM " + userAccountID)
       .then((res: any) => {
         // console.log("Word relation : ");
@@ -73,13 +82,12 @@ export async function getLearningWordListForAccount(
         return res[0] as RelateResponse<LearnsRelation>;
       })
       .catch((err) => {
-        console.error("Catched error : " + err);
-        return null;
+        console.error(err);
+        return new Error(err);
       });
 
-    if (!res) {
-      console.error("No result for word relation request");
-      return null;
+    if (res instanceof Error) {
+      return res;
     }
 
     // console.log("Res : " + JSON.stringify(res));
