@@ -21,11 +21,17 @@ import { getNewWordFromDicolink } from "../../services/dicolink";
 import TextCustom from "../../components/TextCustom";
 import { getSurrealCompatibleDate } from "../../surrealdb";
 
+import Colors from "../../constants/Colors";
+import useColorScheme from "../../hooks/useColorScheme";
+
 export default function ProfileScreen({
   navigation,
 }: RootTabScreenProps<"Profile">) {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
+
+  const scheme = useColorScheme();
+  const theme = scheme === "dark" ? Colors.dark : Colors.light;
 
   useEffect(() => {
     AsyncStorage.getItem("user").then((value) => {
@@ -39,7 +45,7 @@ export default function ProfileScreen({
   return (
     <>
       {user ? (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
           <View style={styles.header}>
             <Image
               source={

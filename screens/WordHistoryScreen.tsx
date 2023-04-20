@@ -2,16 +2,16 @@ import { StyleSheet, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Spacer from "../components/Spacer";
 import { Text, View } from "../components/Themed";
-import { addToCart, removeFromFavorites, RootState } from "../redux";
-import { Shoe } from "../services/shoes";
+import Colors from "../constants/Colors";
+import useColorScheme from "../hooks/useColorScheme";
 
 export default function WordHistoryScreen() {
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart);
   const favorites = useSelector((state: RootState) => state.favorites);
 
-  function removeItemFromFavorites(id: string): any {
-    dispatch(removeFromFavorites(id));
+  const scheme = useColorScheme();
+  const theme = scheme === "dark" ? Colors.dark : Colors.light;
     console.log("Favorites : " + JSON.stringify(favorites));
   }
 
@@ -21,7 +21,7 @@ export default function WordHistoryScreen() {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: "white" }}>
+    <ScrollView style={{ backgroundColor: theme.background }}>
       <View style={styles.container}>
         <Text style={styles.title}>Favorites</Text>
         <Spacer height={40} />
@@ -34,9 +34,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
+    alignItems: "center",
     width: "100%",
     height: "100%",
-    backgroundColor: "#ffffff00",
   },
   title: {
     fontSize: 30,
@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     fontStyle: "italic",
+    backgroundColor: "#ff000000",
   },
   list: {
     backgroundColor: "#ff000000",
