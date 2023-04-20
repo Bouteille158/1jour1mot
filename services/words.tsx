@@ -47,6 +47,7 @@ export async function getTodayWordForEndUser(
     return word as Word;
   }
 
+  console.log(word.id);
   if (!word.id) {
     throw new Error("Word id is not defined");
   }
@@ -60,9 +61,48 @@ export async function getTodayWordForEndUser(
   } else if (learnedWordsList instanceof Error) {
     console.error("Error while getting learned words list");
     alert("Error while getting learned words list");
+    throw new Error("Error while getting learned words list");
+  }
+
+  if (!learnedWordsList.includes(word.id)) {
+    console.log("Word is not in learned list");
+    addWordToLearnedWordsList(word.id, userAccountID);
+  } else {
+    console.log("Word is in learned list");
   }
 
   return word as Word;
+}
+
+export async function addWordToLearnedWordsList(
+  wordId: string,
+  userAccountID: string
+): Promise<void> {
+  console.log("Add word to learned words list");
+  console.log("Word id : " + wordId);
+  console.log("User account id : " + userAccountID);
+  await connectSurreal().then(async () => {
+    const res = await db
+      .query(
+        "RELATE " +
+          userAccountID +
+          "->learns->" +
+          wordId +
+          " CONTENT {created_at: time::now(), guessedRight: false}"
+      )
+      .catch((err) => {
+        console.log("Error while adding word to learned words list : " + err);
+        return;
+      });
+
+    if (!res) {
+      return null;
+    }
+
+    console.log("Add word to learned words list : ");
+    console.log(res);
+    return;
+  });
 }
 
 export async function getLearningWordListForAccount(
