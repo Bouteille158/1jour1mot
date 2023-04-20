@@ -32,6 +32,10 @@ const firebaseConfig = {
   appId: "1:383078431930:web:ced58d1097442424335683",
 };
 
+export function getFirebaseApp() {
+  return firebase.initializeApp(firebase.app().options, "auth-worker");
+}
+
 const fireApp = firebase.initializeApp(firebaseConfig);
 
 initializeAuth(fireApp, {

@@ -13,7 +13,7 @@ import Spacer from "../../components/Spacer";
 import { useDispatch } from "react-redux";
 import { setGlobalUser } from "../../redux";
 import { createUser, User } from "../../services/users";
-import firebase from "../../firebase";
+import firebase, { getFirebaseApp } from "../../firebase";
 import TextCustom from "../../components/TextCustom";
 import ButtonCustom from "../../components/ButtonCustom";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -27,7 +27,8 @@ export default function RegisterScreen({
   const [password, setPassword] = useState("");
 
   const register = (name: string, email: string, password: string) => {
-    firebase
+    const tempAuth = getFirebaseApp();
+    tempAuth
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(async (credentials) => {
@@ -38,17 +39,13 @@ export default function RegisterScreen({
           id: "account:" + user.uid,
           name: name,
         };
-        await createUser(userToAdd);
-        AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
-
-        return userToAdd;
-      })
-      .then((user) => {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Root" }],
+        await createUser(userToAdd).then(() => {
+          console.log("User created");
         });
-        dispatch(setGlobalUser(user));
+        AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
+        dispatch(setGlobalUser(userToAdd));
+        await firebase.auth().signInWithEmailAndPassword(email, password);
+        return userToAdd;
       })
       .catch((error) => {
         alert(error.message);
