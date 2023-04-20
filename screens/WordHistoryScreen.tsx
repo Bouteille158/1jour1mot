@@ -21,7 +21,7 @@ export default function WordHistoryScreen() {
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: "white" }}>
       <View style={styles.container}>
         <Text style={styles.title}>Favorites</Text>
         <Spacer height={40} />
