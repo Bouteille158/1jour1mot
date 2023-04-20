@@ -74,6 +74,42 @@ export async function getTodayWordForEndUser(
   return word as Word;
 }
 
+export async function getWordHistory(
+  wordIDlist: string[]
+): Promise<Word[] | null> {
+  return await connectSurreal().then(async () => {
+    let wordList: Word[] = [];
+
+    for (const wordID of wordIDlist) {
+      const res = await db.select(wordID).catch((err) => {
+        console.log("Error while getting word in history : " + err);
+      });
+
+      if (!res) {
+        return null;
+      }
+
+      if (
+        (res[0] as Word).word &&
+        (res[0] as Word).definitions &&
+        (res[0] as Word).scoreScrabble &&
+        (res[0] as Word).id
+      ) {
+        console.log("Word added to history : ");
+        console.log(res);
+        wordList.push((await res[0]) as Word);
+        console.log("Word list : " + wordList);
+      } else {
+        throw new Error("Invalid response type");
+      }
+    }
+
+    console.log("Returned word history : ");
+    console.log(wordList);
+    return wordList;
+  });
+}
+
 export async function addWordToLearnedWordsList(
   wordId: string,
   userAccountID: string
