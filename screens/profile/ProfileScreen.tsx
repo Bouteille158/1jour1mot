@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  FlatList,
   Image,
   StyleSheet,
   Text,
@@ -12,14 +11,8 @@ import { RootTabScreenProps } from "../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../../redux";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getCurrentDayWordFromSurreal,
-  getTodayWordForEndUser,
-  importNewWordFromDicolink,
-} from "../../services/words";
-import { getNewWordFromDicolink } from "../../services/dicolink";
+import { isWordCurrentlyLearned } from "../../services/words";
 import TextCustom from "../../components/TextCustom";
-import { getSurrealCompatibleDate } from "../../surrealdb";
 
 import Colors from "../../constants/Colors";
 import useColorScheme from "../../hooks/useColorScheme";
@@ -41,6 +34,49 @@ export default function ProfileScreen({
       }
     });
   }, [user]);
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#fff",
+    },
+    header: {
+      alignItems: "center",
+      flexDirection: "row",
+      padding: 16,
+    },
+    profilePic: {
+      width: 80,
+      height: 80,
+      borderColor: "#808080",
+      borderRadius: 10,
+      padding: 10,
+      borderWidth: 1,
+    },
+    profileInfos: {
+      flex: 1,
+      marginLeft: 20,
+    },
+    profileName: {
+      color: theme.text,
+      fontSize: 20,
+      fontWeight: "bold",
+    },
+    profileAddress: {
+      color: "#808080",
+    },
+    ordersTitle: {
+      fontSize: 16,
+      marginTop: 10,
+      marginBottom: 8,
+      paddingHorizontal: 16,
+      fontWeight: "bold",
+      color: "#505050",
+    },
+    orders: {
+      paddingHorizontal: 16,
+    },
+  });
 
   return (
     <>
@@ -65,8 +101,8 @@ export default function ProfileScreen({
               title="Activate function"
               onPress={async () => {
                 console.log("Button pressed");
-                getTodayWordForEndUser(user.id).then((res) => {
-                  console.log("res: ", res);
+                isWordCurrentlyLearned(user.id, "word:230425").then((value) => {
+                  console.log("Value : " + value);
                 });
               }}
             ></Button>
@@ -87,45 +123,3 @@ export default function ProfileScreen({
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  header: {
-    alignItems: "center",
-    flexDirection: "row",
-    padding: 16,
-  },
-  profilePic: {
-    width: 80,
-    height: 80,
-    borderColor: "#808080",
-    borderRadius: 10,
-    padding: 10,
-    borderWidth: 1,
-  },
-  profileInfos: {
-    flex: 1,
-    marginLeft: 20,
-  },
-  profileName: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  profileAddress: {
-    color: "#808080",
-  },
-  ordersTitle: {
-    fontSize: 16,
-    marginTop: 10,
-    marginBottom: 8,
-    paddingHorizontal: 16,
-    fontWeight: "bold",
-    color: "#505050",
-  },
-  orders: {
-    paddingHorizontal: 16,
-  },
-});
