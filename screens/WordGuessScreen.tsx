@@ -16,7 +16,8 @@ export default function WordGuessScreen() {
   }, []);
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>~Shop~</Text>
+      <Spacer height={20} />
+      <Text style={styles.title}>WIP</Text>
       <Spacer height={5} />
       <FlatList
         data={shoes}
