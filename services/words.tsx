@@ -58,10 +58,10 @@ export async function getTodayWordForEndUser(
   try {
     const isLearningWord = await isWordCurrentlyLearned(userAccountID, word.id);
     if (!isLearningWord) {
-      console.log("Word is not learned yet =============================");
+      console.log("Word is not learned yet");
       addWordToLearnedWordsList(word.id, userAccountID);
     } else {
-      console.log("Word is already learned =============================");
+      console.log("Word is already learned");
     }
   } catch (error) {
     console.error(error);
@@ -178,13 +178,10 @@ export async function isWordCurrentlyLearned(
 export async function getLearningWordListForAccount(
   userAccountID: string
 ): Promise<string[] | Error> {
-  // console.log("\n\n      Start of getWordRelations");
   return await connectSurreal().then(async () => {
     const res: RelateResponse<LearnsRelation> | Error = await db
       .query("SELECT ->learns->word FROM " + userAccountID)
       .then((res: any) => {
-        // console.log("Word relation : ");
-        // console.log(JSON.stringify(res));
         if (res[0].status === "ERR") {
           console.error("Error while getting word relation : " + res[0]);
           throw new Error("Error while getting word relation : " + res[0]);
@@ -200,16 +197,9 @@ export async function getLearningWordListForAccount(
       return res;
     }
 
-    // console.log("Res : " + JSON.stringify(res));
-    const parsedRes: RelateResponse<LearnsRelation> = JSON.parse(
-      JSON.stringify(res)
+    const learnedWordsIdList = res.result[0]["->learns"]["->word"].sort(
+      (a: string, b: string) => b.localeCompare(a)
     );
-    const learnedWordsIdList = res.result[0]["->learns"]["->word"];
-
-    // console.log("Parsed res : " + JSON.stringify(parsedRes));
-    // console.log("Learned words id list" + JSON.stringify(learnedWordsIdList));
-
-    // console.log("End of getWordRelations");
 
     return learnedWordsIdList;
   });
