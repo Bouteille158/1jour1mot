@@ -4,7 +4,7 @@ import { StyleSheet, Text, useColorScheme } from "react-native";
 import Colors from "../constants/Colors";
 
 interface CustomTextProps {
-  children: string;
+  children: string | string[];
   isBold?: boolean;
   size?: number;
   color?: string;
