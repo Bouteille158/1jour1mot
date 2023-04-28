@@ -1,27 +1,34 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Text } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { View } from "../components/Themed";
-import { RootState } from "../redux";
+import { RootState, setTodayWord } from "../redux";
 import TextCustom from "../components/TextCustom";
 import { Word, getTodayWordForEndUser } from "../services/words";
 import NewWordCard from "../components/NewWordCard";
 import moment from "moment";
 
 export default function NewWordScreen() {
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
-  const [word, setWord] = useState<Word>();
+  const word: Word = useSelector((state: RootState) => state.todayWord);
+  const [wordSection, setwordSection] = useState(
+    <View>
+      <TextCustom>Loading...</TextCustom>
+    </View>
+  );
   const [currentDate, setCurrentDate] = useState(moment());
 
   useEffect(() => {
     getTodayWordForEndUser(user.id)
       .then((res) => {
         // console.log("res: ", res);
-        setWord(res);
-        // console.log("Word : ", word);
+        dispatch(setTodayWord(res));
+        setwordSection(<NewWordCard word={res} />);
       })
       .catch((err) => {
         console.log("Error : ", err);
+        setwordSection(<TextCustom>Error : No word found</TextCustom>);
       });
     const intervalId = setInterval(() => {
       const newDate = moment();
@@ -32,16 +39,9 @@ export default function NewWordScreen() {
     return () => clearInterval(intervalId);
   }, [currentDate]);
 
-  let newWordSection;
-  if (word) {
-    newWordSection = <NewWordCard word={word} />;
-  } else {
-    newWordSection = <TextCustom>Error : No word found</TextCustom>;
-  }
-
   return (
     <View style={styles.container}>
-      {newWordSection}
+      {wordSection}
       <View>
         <Text>Today is {currentDate.format("ddd, MMM D YYYY")}</Text>
         <Text>{currentDate.format()}</Text>
