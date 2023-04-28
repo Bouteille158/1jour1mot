@@ -20,54 +20,37 @@ export default function LauncherScreen({
   navigation,
 }: RootStackScreenProps<"Launcher">) {
   const dispatch = useDispatch();
-  const LoginCheck = useSelector((state: RootState) => state.loginCheck);
-
-  const [isSignedIn, setisSignedIn] = useState(false);
 
   useEffect(() => {
-    console.log("Already checked login : " + LoginCheck.toString());
-    if (!LoginCheck) {
-      dispatch(deactivateLoginCheck());
-      firebase.auth().onAuthStateChanged(async (user) => {
-        if (!user) {
-          if (isSignedIn) {
-            console.log("Déconnexion de l'utilisateur :");
-            // console.log(user);
-            setisSignedIn(false);
-          } else {
-            console.log("Utilisateur déjà déconnecté !");
-          }
-        } else {
-          console.log("Changement d'état de l'utilisateur :");
-          // console.log(user);
-          setisSignedIn(true);
-          const userFromDB = await getUser(user.uid).catch(async (err) => {
-            alert(
-              "Erreur lors de la récupération des données de l'utilisateur"
-            );
-            console.error(err);
-            await firebase.auth().signOut();
-            AsyncStorage.setItem("user", "").then(() => {
-              dispatch(setGlobalUser({ uid: "", id: "", name: "" }));
-              navigation.reset({
-                index: 0,
-                routes: [{ name: "Launcher" }],
-              });
-            });
-          });
-
-          if (userFromDB) {
-            AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
-            dispatch(setGlobalUser(userFromDB));
-            dispatch(activateLoginCheck());
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        console.log("Changement d'état de l'utilisateur :");
+        // console.log(user);
+        const userFromDB = await getUser(user.uid).catch(async (err) => {
+          alert("Erreur lors de la récupération des données de l'utilisateur");
+          console.error(err);
+          await firebase.auth().signOut();
+          AsyncStorage.setItem("user", "").then(() => {
+            dispatch(setGlobalUser({ uid: "", id: "", name: "" }));
             navigation.reset({
               index: 0,
-              routes: [{ name: "Root" }],
+              routes: [{ name: "Launcher" }],
             });
-          }
+          });
+        });
+
+        if (userFromDB) {
+          AsyncStorage.setItem("user", JSON.stringify({ uid: user.uid }));
+          dispatch(setGlobalUser(userFromDB));
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Root" }],
+          });
         }
-      });
-    }
+      } else {
+        console.log("Pas d'utilisateur connecté");
+      }
+    });
   }, []);
 
   return (
