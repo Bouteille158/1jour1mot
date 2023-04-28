@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { View } from "../components/Themed";
 import { RootState, setTodayWord } from "../redux";
 import TextCustom from "../components/TextCustom";
-import { Word, getTodayWordForEndUser } from "../services/words";
+import { getTodayWordForEndUser } from "../services/words";
 import NewWordCard from "../components/NewWordCard";
 import moment from "moment";
 
 export default function NewWordScreen() {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
-  const word: Word = useSelector((state: RootState) => state.todayWord);
   const [wordSection, setwordSection] = useState(
     <View>
       <TextCustom>Loading...</TextCustom>
@@ -43,8 +42,10 @@ export default function NewWordScreen() {
     <View style={styles.container}>
       {wordSection}
       <View>
-        <Text>Today is {currentDate.format("ddd, MMM D YYYY")}</Text>
-        <Text>{currentDate.format()}</Text>
+        <TextCustom>
+          Today is {currentDate.format("ddd, MMM D YYYY")}
+        </TextCustom>
+        <TextCustom>{currentDate.format()}</TextCustom>
       </View>
     </View>
   );
@@ -64,7 +65,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     fontStyle: "italic",
-
     backgroundColor: "#ff000000",
   },
   list: {
