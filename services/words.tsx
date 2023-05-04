@@ -175,6 +175,49 @@ export async function isWordCurrentlyLearned(
   });
 }
 
+export async function isWordCurrentlyGuessedRight(
+  accountID: string,
+  wordID: string
+): Promise<boolean | Error> {
+  console.log("iwWordCurrentlyGuessedRight function started");
+  console.log("Account ID : " + accountID);
+  console.log("Word ID : " + wordID);
+  return await connectSurreal().then(async () => {
+    const res: RelateResponse<LearnsObject> | Error = await db
+      .query(
+        "SELECT * FROM learns WHERE out == " +
+          wordID +
+          " AND in == " +
+          accountID
+      )
+      .then((res: any) => {
+        if (res[0].status === "ERR") {
+          console.error("Error while getting word relation : " + res[0]);
+          throw new Error("Error while getting word relation : " + res[0]);
+        }
+
+        return res[0] as RelateResponse<LearnsObject>;
+      })
+      .catch((err) => {
+        console.error(err);
+        return new Error(err);
+      });
+
+    if (!res) {
+      return new Error("Error while getting word relation : res is empty");
+    } else if (res instanceof Error) {
+      return new Error("Error while getting word relation : " + res);
+    }
+    console.log("iwWordCurrentlyGuessedRight function stopped");
+
+    if (res.result[0].guessedRight) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+}
+
 export async function getLearningWordListForAccount(
   userAccountID: string
 ): Promise<string[] | Error> {
@@ -203,6 +246,38 @@ export async function getLearningWordListForAccount(
 
     return learnedWordsIdList;
   });
+}
+
+export async function getLastLearningWordIDForAccount(
+  userAccountID: string
+): Promise<string | null | Error> {
+  const wordIDlist = await getLearningWordListForAccount(userAccountID);
+  if (wordIDlist instanceof Error) {
+    return wordIDlist;
+  }
+
+  let firstWordSkipTrigger: boolean = true;
+
+  for (const wordID of wordIDlist) {
+    // console.log("Word ID check if is learned: " + wordID);
+    const trigger = await isWordCurrentlyGuessedRight(userAccountID, wordID);
+    // console.log("Trigger for " + wordID + " : " + JSON.stringify(trigger));
+    if (!trigger) {
+      if (firstWordSkipTrigger) {
+        console.log("First word not learned skipped : " + wordID);
+        firstWordSkipTrigger = false;
+        continue;
+      } else {
+        console.log("Word not learned found : " + wordID);
+        return wordID;
+      }
+    } else {
+      // console.log("Word learned skipped : " + wordID);
+    }
+  }
+
+  console.log("No word found");
+  return null;
 }
 
 export async function importNewWordFromDicolink(
