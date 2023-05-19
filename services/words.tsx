@@ -280,6 +280,30 @@ export async function getLastLearningWordIDForAccount(
   return null;
 }
 
+export async function getWordFromID(wordID: string): Promise<Word | Error> {
+  console.log("Get word from ID function started");
+  console.log("Word ID : " + wordID);
+  return await connectSurreal().then(async () => {
+    const res: Word | Error = await db
+      .select(wordID)
+      .then((res: any) => {
+        if (res[0].status === "ERR") {
+          console.error("Error while getting word : " + res[0]);
+          throw new Error("Error while getting word : " + res[0]);
+        }
+        return res[0] as Word;
+      })
+      .catch((err) => {
+        console.error(err);
+        return new Error(err);
+      });
+
+    console.log("Get word from ID function stopped");
+
+    return res;
+  });
+}
+
 export async function importNewWordFromDicolink(
   dicolinkWord: MotdujourDicolink,
   userAccountID: string
