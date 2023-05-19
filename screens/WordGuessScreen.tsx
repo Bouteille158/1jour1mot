@@ -1,32 +1,36 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
+  Text,
+  View,
+  useColorScheme,
 } from "react-native";
 import Spacer from "../components/Spacer";
-import { Text, View } from "../components/Themed";
 import InputCustom from "../components/InputCustom";
 import ButtonCustom from "../components/ButtonCustom";
-
 import { useHeaderHeight } from "@react-navigation/elements";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux";
+import TextCustom from "../components/TextCustom";
+import Colors from "../constants/Colors";
 
 export default function WordGuessScreen() {
   const [guess, setGuess] = useState<string>("");
-  useEffect(() => {}, []);
+  const [showDefinitions, setShowDefinitions] = useState<boolean>(false);
+  const learningWord = useSelector((state: RootState) => state.lastLearnedWord);
 
+  const scheme = useColorScheme();
+  const theme = scheme === "dark" ? Colors.dark : Colors.light;
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       alignItems: "center",
       justifyContent: "center",
-      // borderWidth: 2,
-      // borderColor: "#00ccff",
+      backgroundColor: theme.background,
     },
     title: {
-      // borderWidth: 2,
-      // borderColor: "#275745",
       fontSize: 20,
       fontWeight: "bold",
     },
@@ -37,8 +41,6 @@ export default function WordGuessScreen() {
     <KeyboardAvoidingView
       style={{
         flex: 1,
-        // borderWidth: 2,
-        // borderColor: "#ff0000ff"
       }}
       behavior={Platform.select({ android: undefined, ios: "padding" })}
       keyboardVerticalOffset={Platform.select({
@@ -48,9 +50,35 @@ export default function WordGuessScreen() {
     >
       {/* <ScrollView bounces={false}> */}
       <View style={styles.container}>
-        <Text style={styles.title}>
+        <View>
+          {showDefinitions ? (
+            <View>
+              {learningWord.definitions.map((definition, key) => {
+                return (
+                  <TextCustom key={key}>{definition.definition}</TextCustom>
+                );
+              })}
+              <ButtonCustom
+                onPress={() => {
+                  setShowDefinitions(!showDefinitions);
+                }}
+              >
+                Cacher les définitions
+              </ButtonCustom>
+            </View>
+          ) : (
+            <ButtonCustom
+              onPress={() => {
+                setShowDefinitions(!showDefinitions);
+              }}
+            >
+              Afficher les définitions
+            </ButtonCustom>
+          )}
+        </View>
+        <TextCustom style={styles.title}>
           Devinez le dernier mot que vous avez appris
-        </Text>
+        </TextCustom>
         <Spacer height={30} />
         <InputCustom
           value={guess}
@@ -60,11 +88,11 @@ export default function WordGuessScreen() {
           placeholder="Entrez un mot"
           width={"80%"}
         ></InputCustom>
-        <Text>
+        <TextCustom>
           {guess.length > 0
             ? "Vous avez entré : " + guess
             : "Vous n'avez pas encore entré de mot"}
-        </Text>
+        </TextCustom>
         <Spacer height={10}></Spacer>
         <ButtonCustom
           onPress={() => {
