@@ -4,7 +4,8 @@ import { StyleSheet, Text, useColorScheme } from "react-native";
 import Colors from "../constants/Colors";
 
 interface CustomTextProps {
-  children: string | string[];
+  style?: any;
+  children: string | string[] | any;
   isBold?: boolean;
   size?: number;
   color?: string;
@@ -13,7 +14,7 @@ interface CustomTextProps {
 }
 
 export default function TextCustom(props: CustomTextProps) {
-  const { children, ...rest } = props;
+  const { children, style, ...rest } = props;
   const scheme = useColorScheme();
   const theme = scheme === "dark" ? Colors.dark : Colors.light;
 
@@ -24,6 +25,7 @@ export default function TextCustom(props: CustomTextProps) {
       fontWeight: props.isBold ? "bold" : "normal",
       padding: props.padding ? props.padding : 0,
       margin: props.margin ? props.margin : 2,
+      ...style,
     },
   });
 
