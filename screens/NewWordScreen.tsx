@@ -2,9 +2,13 @@ import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { View } from "../components/Themed";
-import { RootState, setTodayWord } from "../redux";
+import { RootState, setLastWord, setTodayWord } from "../redux";
 import TextCustom from "../components/TextCustom";
-import { getTodayWordForEndUser } from "../services/words";
+import {
+  getLastLearningWordIDForAccount,
+  getTodayWordForEndUser,
+  getWordFromID,
+} from "../services/words";
 import NewWordCard from "../components/NewWordCard";
 import moment from "moment";
 
@@ -28,6 +32,22 @@ export default function NewWordScreen() {
       .catch((err) => {
         console.log("Error : ", err);
         setwordSection(<TextCustom>Error : No word found</TextCustom>);
+      });
+    getLastLearningWordIDForAccount(user.id)
+      .then(async (wordID) => {
+        console.log("Last learned word ID : ", wordID);
+        if (!wordID || wordID instanceof Error) {
+          throw new Error("No last learned word");
+        }
+        const lastWord = await getWordFromID(wordID);
+        if (!lastWord || lastWord instanceof Error) {
+          console.error("Error getting last learning word : ", lastWord);
+        } else {
+          dispatch(setLastWord(lastWord));
+        }
+      })
+      .catch((err) => {
+        console.log("Error getting last learning word : ", err);
       });
     const intervalId = setInterval(() => {
       const newDate = moment();
