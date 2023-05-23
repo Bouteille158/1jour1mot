@@ -179,9 +179,9 @@ export async function isWordCurrentlyGuessedRight(
   accountID: string,
   wordID: string
 ): Promise<boolean | Error> {
-  console.log("iwWordCurrentlyGuessedRight function started");
-  console.log("Account ID : " + accountID);
-  console.log("Word ID : " + wordID);
+  console.log("isWordCurrentlyGuessedRight function for word : " + wordID);
+  // console.log("Account ID : " + accountID);
+  // console.log("Word ID : " + wordID);
   return await connectSurreal().then(async () => {
     const res: RelateResponse<LearnsObject> | Error = await db
       .query(
@@ -208,7 +208,7 @@ export async function isWordCurrentlyGuessedRight(
     } else if (res instanceof Error) {
       return new Error("Error while getting word relation : " + res);
     }
-    console.log("iwWordCurrentlyGuessedRight function stopped");
+    // console.log("isWordCurrentlyGuessedRight function stopped");
 
     if (res.result[0].guessedRight) {
       return true;
@@ -251,6 +251,8 @@ export async function getLearningWordListForAccount(
 export async function getLastLearningWordIDForAccount(
   userAccountID: string
 ): Promise<string | null | Error> {
+  console.log("Get last learning word id for account");
+  console.log("User account id : " + userAccountID);
   const wordIDlist = await getLearningWordListForAccount(userAccountID);
   if (wordIDlist instanceof Error) {
     return wordIDlist;
@@ -302,6 +304,89 @@ export async function getWordFromID(wordID: string): Promise<Word | Error> {
 
     return res;
   });
+}
+
+export async function getLearnRelationFromWordIDAndAccountID(
+  wordID: string,
+  accountID: string
+): Promise<LearnsObject | Error> {
+  console.log(
+    "Get learn relation from word ID and account ID function started"
+  );
+  console.log("Account ID : " + accountID);
+  console.log("Word ID : " + wordID);
+  const res = await connectSurreal().then(async () => {
+    const res: RelateResponse<LearnsObject> | Error = await db
+      .query(
+        "SELECT * FROM learns WHERE out == " +
+          wordID +
+          " AND in == " +
+          accountID
+      )
+      .then((res: any) => {
+        if (res[0].status === "ERR") {
+          console.error("Error while getting word relation : " + res[0]);
+          throw new Error("Error while getting word relation : " + res[0]);
+        }
+
+        return res[0] as RelateResponse<LearnsObject>;
+      })
+      .catch((err) => {
+        console.error(err);
+        return new Error(err);
+      });
+    return res;
+  });
+
+  console.log(
+    "Get learn relation from word ID and account ID function stopped"
+  );
+  if (res instanceof Error) {
+    return res;
+  }
+  return res.result[0];
+}
+
+export async function setWordAsGuessedRight(
+  accountID: string,
+  wordID?: string
+) {
+  console.log("Set word as guessed right function started");
+  console.log("Account ID : " + accountID);
+  console.log("Word ID : " + wordID);
+  if (!wordID) {
+    throw new Error("Word ID is empty");
+  }
+  const learns = await getLearnRelationFromWordIDAndAccountID(
+    wordID,
+    accountID
+  );
+
+  if (learns instanceof Error) {
+    throw new Error("Error while getting learn relation : " + learns);
+  }
+
+  const res = await connectSurreal().then(async () => {
+    const res = await db
+      .change(learns.id, {
+        guessedRight: true,
+      })
+      .then((res: any) => {
+        return res;
+      })
+      .catch((err) => {
+        console.error(err);
+        return new Error(err);
+      });
+
+    return res;
+  });
+
+  // console.log("learns : " + JSON.stringify(learns));
+  // console.log("res : " + JSON.stringify(res));
+  console.log("Set word as guessed right function stopped");
+
+  return res;
 }
 
 export async function importNewWordFromDicolink(
