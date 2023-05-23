@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -41,6 +42,15 @@ export default function WordGuessScreen() {
   });
   // const headerHeight = useHeaderHeight();
 
+  // create a function that show an alert if the word is correct
+  function handleGuess(guess: string) {
+    if (guess.trim().toLowerCase() === learningWord.word.trim().toLowerCase()) {
+      Alert.alert("Bravo !", "Vous avez deviné le mot correctement.");
+    } else {
+      Alert.alert("Dommage !", "Vous n'avez pas deviné le mot correctement.");
+    }
+  }
+
   return (
     <>
       {/* <KeyboardAvoidingView
@@ -62,7 +72,11 @@ export default function WordGuessScreen() {
         <Spacer height={20} />
 
         <View>
-          <View>
+          <View
+            style={{
+              alignItems: "center",
+            }}
+          >
             <TextCustom>
               {learningWord.definitions[definitionId].definition.trim()}
             </TextCustom>
@@ -71,7 +85,7 @@ export default function WordGuessScreen() {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center",
+                width: 180,
               }}
             >
               <ButtonCustom
@@ -85,8 +99,17 @@ export default function WordGuessScreen() {
                 width={50}
                 isBold
               >
-                {"\u27E8"}
+                {"<"}
               </ButtonCustom>
+              <Spacer width={10} />
+              <TextCustom
+                style={{
+                  flex: 1,
+                  textAlign: "center",
+                }}
+              >
+                {definitionId + 1} / {learningWord.definitions.length}
+              </TextCustom>
               <Spacer width={10} />
               <ButtonCustom
                 onPress={() => {
@@ -99,7 +122,7 @@ export default function WordGuessScreen() {
                 width={50}
                 isBold
               >
-                {"\u27E9"}
+                {">"}
               </ButtonCustom>
             </View>
           </View>
@@ -116,13 +139,13 @@ export default function WordGuessScreen() {
         ></InputCustom>
         <TextCustom>
           {guess.length > 0
-            ? "Vous avez entré : " + guess
+            ? "Vous avez entré : " + guess.trim()
             : "Vous n'avez pas encore entré de mot"}
         </TextCustom>
         <Spacer height={10}></Spacer>
         <ButtonCustom
           onPress={() => {
-            console.log("Button pressed");
+            handleGuess(guess);
           }}
           isBold
         >
