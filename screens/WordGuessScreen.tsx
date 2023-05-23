@@ -1,18 +1,8 @@
-import { useState, useEffect } from "react";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  useColorScheme,
-} from "react-native";
+import { useState } from "react";
+import { Alert, StyleSheet, View, useColorScheme } from "react-native";
 import Spacer from "../components/Spacer";
 import InputCustom from "../components/InputCustom";
 import ButtonCustom from "../components/ButtonCustom";
-// import { useHeaderHeight } from "@react-navigation/elements";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux";
 import TextCustom from "../components/TextCustom";
@@ -20,7 +10,6 @@ import Colors from "../constants/Colors";
 
 export default function WordGuessScreen() {
   const [guess, setGuess] = useState<string>("");
-  const [showDefinitions, setShowDefinitions] = useState<boolean>(false);
   const learningWord = useSelector((state: RootState) => state.lastLearnedWord);
   const [definitionId, setDefinitionId] = useState<number>(0);
 
@@ -40,9 +29,7 @@ export default function WordGuessScreen() {
       width: "80%",
     },
   });
-  // const headerHeight = useHeaderHeight();
 
-  // create a function that show an alert if the word is correct
   function handleGuess(guess: string) {
     if (guess.trim().toLowerCase() === learningWord.word.trim().toLowerCase()) {
       Alert.alert("Bravo !", "Vous avez deviné le mot correctement.");
@@ -53,17 +40,6 @@ export default function WordGuessScreen() {
 
   return (
     <>
-      {/* <KeyboardAvoidingView
-      style={{
-        flex: 1,
-      }}
-      behavior={Platform.select({ android: undefined, ios: "padding" })}
-      keyboardVerticalOffset={Platform.select({
-        android: headerHeight + 2000,
-        ios: headerHeight - 200,
-      })}
-    > */}
-      {/* <ScrollView bounces={false}> */}
       <View style={styles.container}>
         <TextCustom style={styles.title}>
           Devinez le dernier mot que vous avez appris ayant les définitions
@@ -152,8 +128,6 @@ export default function WordGuessScreen() {
           Valider
         </ButtonCustom>
       </View>
-      {/* </ScrollView> */}
-      {/* </KeyboardAvoidingView> */}
     </>
   );
 }
