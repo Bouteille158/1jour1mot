@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -10,7 +11,7 @@ import {
 import Spacer from "../components/Spacer";
 import InputCustom from "../components/InputCustom";
 import ButtonCustom from "../components/ButtonCustom";
-import { useHeaderHeight } from "@react-navigation/elements";
+// import { useHeaderHeight } from "@react-navigation/elements";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux";
 import TextCustom from "../components/TextCustom";
@@ -20,6 +21,7 @@ export default function WordGuessScreen() {
   const [guess, setGuess] = useState<string>("");
   const [showDefinitions, setShowDefinitions] = useState<boolean>(false);
   const learningWord = useSelector((state: RootState) => state.lastLearnedWord);
+  const [definitionId, setDefinitionId] = useState<number>(0);
 
   const scheme = useColorScheme();
   const theme = scheme === "dark" ? Colors.dark : Colors.light;
@@ -32,13 +34,16 @@ export default function WordGuessScreen() {
     },
     title: {
       fontSize: 20,
-      fontWeight: "bold",
+      fontWeight: "500",
+      textAlign: "center",
+      width: "80%",
     },
   });
-  const headerHeight = useHeaderHeight();
+  // const headerHeight = useHeaderHeight();
 
   return (
-    <KeyboardAvoidingView
+    <>
+      {/* <KeyboardAvoidingView
       style={{
         flex: 1,
       }}
@@ -47,38 +52,59 @@ export default function WordGuessScreen() {
         android: headerHeight + 2000,
         ios: headerHeight - 200,
       })}
-    >
+    > */}
       {/* <ScrollView bounces={false}> */}
       <View style={styles.container}>
+        <TextCustom style={styles.title}>
+          Devinez le dernier mot que vous avez appris ayant les définitions
+          suivantes
+        </TextCustom>
+        <Spacer height={20} />
+
         <View>
-          {showDefinitions ? (
-            <View>
-              {learningWord.definitions.map((definition, key) => {
-                return (
-                  <TextCustom key={key}>{definition.definition}</TextCustom>
-                );
-              })}
-              <ButtonCustom
-                onPress={() => {
-                  setShowDefinitions(!showDefinitions);
-                }}
-              >
-                Cacher les définitions
-              </ButtonCustom>
-            </View>
-          ) : (
-            <ButtonCustom
-              onPress={() => {
-                setShowDefinitions(!showDefinitions);
+          <View>
+            <TextCustom>
+              {learningWord.definitions[definitionId].definition.trim()}
+            </TextCustom>
+            <Spacer height={10} />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              Afficher les définitions
-            </ButtonCustom>
-          )}
+              <ButtonCustom
+                onPress={() => {
+                  setDefinitionId(
+                    (((definitionId - 1) % learningWord.definitions.length) +
+                      learningWord.definitions.length) %
+                      learningWord.definitions.length
+                  );
+                }}
+                width={50}
+                isBold
+              >
+                {"\u27E8"}
+              </ButtonCustom>
+              <Spacer width={10} />
+              <ButtonCustom
+                onPress={() => {
+                  setDefinitionId(
+                    (((definitionId + 1) % learningWord.definitions.length) +
+                      learningWord.definitions.length) %
+                      learningWord.definitions.length
+                  );
+                }}
+                width={50}
+                isBold
+              >
+                {"\u27E9"}
+              </ButtonCustom>
+            </View>
+          </View>
         </View>
-        <TextCustom style={styles.title}>
-          Devinez le dernier mot que vous avez appris
-        </TextCustom>
+
         <Spacer height={30} />
         <InputCustom
           value={guess}
@@ -98,11 +124,13 @@ export default function WordGuessScreen() {
           onPress={() => {
             console.log("Button pressed");
           }}
+          isBold
         >
           Valider
         </ButtonCustom>
       </View>
       {/* </ScrollView> */}
-    </KeyboardAvoidingView>
+      {/* </KeyboardAvoidingView> */}
+    </>
   );
 }

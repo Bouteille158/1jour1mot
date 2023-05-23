@@ -9,6 +9,7 @@ interface SquareButtonProps {
   showBorder?: boolean;
   textColor?: string;
   onPress: () => void;
+  textStyle?: any;
 }
 
 const CustomButton = ({
@@ -19,6 +20,7 @@ const CustomButton = ({
   width,
   showBorder,
   textColor,
+  textStyle,
 }: SquareButtonProps) => {
   const backgroundColor = "#494949";
   const borderColor = "#212121";
@@ -42,6 +44,7 @@ const CustomButton = ({
       width: "100%",
       textAlign: "center",
       ...(isBold ? { fontWeight: "bold" } : {}),
+      ...textStyle,
     },
     container: {
       width: width ? width : 140,
