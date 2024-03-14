@@ -40,6 +40,11 @@ export default function WordHistoryCard(props: WordHistoryCardProps) {
       fontSize: 30,
       color: theme.text,
     },
+    mot_id: {
+      fontSize: 10,
+      color: theme.text,
+      alignSelf: "flex-end",
+    },
   });
 
   return (
@@ -48,6 +53,7 @@ export default function WordHistoryCard(props: WordHistoryCardProps) {
         <Text style={styles.mot}>
           {capitalizeFirtLetter(props.word.word.trim())}
         </Text>
+        <Text style={styles.mot_id}>{props.word.id?.slice(5)}</Text>
         <View style={{ flex: 1 }}></View>
         <CustomButton onPress={() => setShowDefinition(!showDefinition)}>
           {showDefinition ? "Cacher définition" : "Montrer définition"}
