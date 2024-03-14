@@ -1,24 +1,54 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text } from "react-native";
-import { useSelector } from "react-redux";
+import { StyleSheet } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { View } from "../components/Themed";
-import { RootState } from "../redux";
+import { RootState, setLastWord, setTodayWord } from "../redux";
 import TextCustom from "../components/TextCustom";
-import { Word, getTodayWordForEndUser } from "../services/words";
+import {
+  getLastLearningWordIDForAccount,
+  getTodayWordForEndUser,
+  getWordFromID,
+} from "../services/words";
 import NewWordCard from "../components/NewWordCard";
 import moment from "moment";
 
 export default function NewWordScreen() {
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
-  const [word, setWord] = useState<Word>();
+  const [wordSection, setwordSection] = useState(
+    <View>
+      <TextCustom>Loading...</TextCustom>
+    </View>
+  );
   const [currentDate, setCurrentDate] = useState(moment());
 
   useEffect(() => {
-    getTodayWordForEndUser(user.id).then((res) => {
-      console.log("res: ", res);
-      setWord(res);
-      console.log("Word : ", word);
-    });
+    getTodayWordForEndUser(user.id)
+      .then((res) => {
+        // console.log("res: ", res);
+        dispatch(setTodayWord(res));
+        setwordSection(<NewWordCard word={res} />);
+      })
+      .catch((err) => {
+        console.log("Error : ", err);
+        setwordSection(<TextCustom>Error : No word found</TextCustom>);
+      });
+    getLastLearningWordIDForAccount(user.id)
+      .then(async (wordID) => {
+        console.log("Last learned word ID : ", wordID);
+        if (!wordID || wordID instanceof Error) {
+          throw new Error("No last learned word");
+        }
+        const lastWord = await getWordFromID(wordID);
+        if (!lastWord || lastWord instanceof Error) {
+          console.error("Error getting last learning word : ", lastWord);
+        } else {
+          dispatch(setLastWord(lastWord));
+        }
+      })
+      .catch((err) => {
+        console.log("Error getting last learning word : ", err);
+      });
     const intervalId = setInterval(() => {
       const newDate = moment();
       if (!newDate.isSame(currentDate, "day")) {
@@ -28,19 +58,14 @@ export default function NewWordScreen() {
     return () => clearInterval(intervalId);
   }, [currentDate]);
 
-  let newWordSection;
-  if (word) {
-    newWordSection = <NewWordCard word={word} />;
-  } else {
-    newWordSection = <TextCustom>Error : No word found</TextCustom>;
-  }
-
   return (
     <View style={styles.container}>
-      {newWordSection}
+      {wordSection}
       <View>
-        <Text>Today is {currentDate.format("ddd, MMM D YYYY")}</Text>
-        <Text>{currentDate.format()}</Text>
+        <TextCustom>
+          Today is {currentDate.format("ddd, MMM D YYYY")}
+        </TextCustom>
+        <TextCustom>{currentDate.format()}</TextCustom>
       </View>
     </View>
   );
@@ -60,7 +85,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     fontStyle: "italic",
-
     backgroundColor: "#ff000000",
   },
   list: {

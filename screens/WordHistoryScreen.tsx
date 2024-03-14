@@ -1,30 +1,54 @@
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import Spacer from "../components/Spacer";
-import { Text, View } from "../components/Themed";
-import { addToCart, removeFromFavorites, RootState } from "../redux";
-import { Shoe } from "../services/shoes";
+import Colors from "../constants/Colors";
+import useColorScheme from "../hooks/useColorScheme";
+import {
+  Word,
+  getLearningWordListForAccount,
+  getWordHistory,
+} from "../services/words";
+import { RootState } from "../redux";
+import { useEffect, useState } from "react";
+import WordHistoryCard from "../components/WordHistoryCard";
 
 export default function WordHistoryScreen() {
   const dispatch = useDispatch();
-  const cart = useSelector((state: RootState) => state.cart);
-  const favorites = useSelector((state: RootState) => state.favorites);
+  const user = useSelector((state: RootState) => state.user);
+  const [wordList, setWordList] = useState<Word[]>([]);
 
-  function removeItemFromFavorites(id: string): any {
-    dispatch(removeFromFavorites(id));
-    console.log("Favorites : " + JSON.stringify(favorites));
+  const scheme = useColorScheme();
+  const theme = scheme === "dark" ? Colors.dark : Colors.light;
+
+  async function getWordHistoryFromService(wordIDList: string[]) {
+    const wordList = await getWordHistory(wordIDList);
+    if (wordList instanceof Error || wordList === null) {
+      console.log(wordList);
+      alert("Error while getting word list in history screen");
+      throw new Error("Error while getting word list in history screen");
+    }
+    console.log("Word list : " + wordList);
+    console.log("Word list type : " + typeof wordList);
+    setWordList(wordList);
   }
 
-  function addItemToCart(shoe: Shoe): any {
-    dispatch(addToCart(shoe));
-    console.log("Cart : " + JSON.stringify(cart));
-  }
+  useEffect(() => {
+    getLearningWordListForAccount(user.id).then((wordIDList) => {
+      if (wordIDList instanceof Error) {
+        console.log(wordIDList);
+        alert("Error while getting word id list in history screen");
+        throw new Error("Error while getting word id list in history screen");
+      }
+      console.log("Word ID list : " + wordIDList);
+      getWordHistoryFromService(wordIDList);
+    });
+  }, []);
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: theme.background }}>
       <View style={styles.container}>
-        <Text style={styles.title}>Favorites</Text>
-        <Spacer height={40} />
+        {wordList.map((word, key) => {
+          return <WordHistoryCard key={key} word={word} />;
+        })}
       </View>
     </ScrollView>
   );
@@ -34,9 +58,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
+    alignItems: "center",
     width: "100%",
     height: "100%",
-    backgroundColor: "#ffffff00",
   },
   title: {
     fontSize: 30,
@@ -44,6 +68,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     fontStyle: "italic",
+    backgroundColor: "#ff000000",
   },
   list: {
     backgroundColor: "#ff000000",

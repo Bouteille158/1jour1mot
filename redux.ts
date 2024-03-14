@@ -2,6 +2,7 @@ import { configureStore, createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit/dist/createAction";
 import { Shoe } from "./services/shoes";
 import { User } from "./services/users";
+import { Word } from "./services/words";
 
 const cartSlice = createSlice({
   name: "cart",
@@ -138,11 +139,35 @@ const loginCheckSlice = createSlice({
   },
 });
 
+const todayWordSlice = createSlice({
+  name: "todayWord",
+  initialState: {} as Word,
+  reducers: {
+    setTodayWord: (state, action: PayloadAction<Word>) => {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
+const lastLearnedWordSlice = createSlice({
+  name: "lastLearnedWord",
+  initialState: {} as Word,
+  reducers: {
+    setLastWord: (state, action: PayloadAction<Word>) => {
+      state = action.payload;
+      return state;
+    },
+  },
+});
+
 export const { addToCart, removeFromCart, updateCart } = cartSlice.actions;
 export const { addToFavorites, removeFromFavorites } = favoritesSlice.actions;
 export const { setGlobalUser } = userSlice.actions;
 export const { activateLoginCheck, deactivateLoginCheck } =
   loginCheckSlice.actions;
+export const { setTodayWord } = todayWordSlice.actions;
+export const { setLastWord } = lastLearnedWordSlice.actions;
 
 export const store = configureStore({
   reducer: {
@@ -150,6 +175,8 @@ export const store = configureStore({
     favorites: favoritesSlice.reducer,
     user: userSlice.reducer,
     loginCheck: loginCheckSlice.reducer,
+    todayWord: todayWordSlice.reducer,
+    lastLearnedWord: lastLearnedWordSlice.reducer,
   },
 });
 

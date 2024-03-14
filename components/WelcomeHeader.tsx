@@ -9,7 +9,7 @@ export default function WelcomeHeader() {
   const scheme = useColorScheme();
   const theme = scheme === "dark" ? Colors.dark : Colors.light;
 
-  console.log(theme);
+  // console.log(theme);
 
   return (
     <View style={styles.container}>

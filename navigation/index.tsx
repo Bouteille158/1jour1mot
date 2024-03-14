@@ -289,7 +289,6 @@ function BottomTabNavigator() {
                 style={styles.icon}
               />
             ),
-            tabBarActiveTintColor: "blue",
           }}
         />
         <BottomTab.Screen
